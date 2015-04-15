@@ -7,11 +7,11 @@ from Mappe import *
 
 
 ################## Joueur Intelligent
-class JoueurAI(Joueur):
+class DumbAI(Joueur):
 
     
     def __init__(self,id):
-        super(JoueurAI,self).__init__(id)
+        super(DumbAI,self).__init__(id)
 
         self.premiereColonie = {}
         self.premiereIntersectionRoute = {}
@@ -22,18 +22,14 @@ class JoueurAI(Joueur):
         self.constructionOuAchat = "COLONIE"
         self.valeurGeneralePrecedente = 100
 
-        import csv
-        with open('catan.txt', 'rt') as f:
-            reader = csv.reader(f, delimiter=' ', skipinitialspace=True)
 
-            cols = next(reader)
 
-        self.valeurActionEchanger = cols[0]  #on assigne une valeur à chaque action
-        self.valeurActionVille = cols[1]
-        self.valeurActionColonie = cols[2]
-        self.valeurActionRoute = cols[3]
-        self.valeurActionAcheterCarte = cols[4]
-        self.valeurActionJouerCarteChevalier = cols[5]
+        self.valeurActionEchanger = 100  #on assigne une valeur à chaque action
+        self.valeurActionVille = 100
+        self.valeurActionColonie = 100
+        self.valeurActionRoute = 101
+        self.valeurActionAcheterCarte = 100
+        self.valeurActionJouerCarteChevalier = 100
 
         #tableau des valeurs des actions
         self.valeursActions = [self.valeurActionEchanger, self.valeurActionVille, self.valeurActionColonie, self.valeurActionRoute, self.valeurActionAcheterCarte, self.valeurActionJouerCarteChevalier]
@@ -120,18 +116,7 @@ class JoueurAI(Joueur):
                         return a
                 
         print 'TERMINER'
-
         return Action.TERMINER
-
-
-    def finDePartie(self,mappe,infoJoueurs):
-        import csv
-        with open('catan.txt', 'w') as f:
-            allo = csv.writer(f, delimiter=' ', skipinitialspace=True)
-            test = [self.valeurActionEchanger, self.valeurActionVille, self.valeurActionColonie,self.valeurActionRoute, self.valeurActionAcheterCarte, self.valeurActionJouerCarteChevalier]
-            allo.writerow(test)
-
-
 
         
 

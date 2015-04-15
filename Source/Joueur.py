@@ -109,7 +109,9 @@ class Joueur(object):
     def choisirAction(self,mappe,infoJoueurs,paquetCartesVide = True):
         return Action.TERMINER
 
-
+    # Méthode additionnelle pour avertir que la partie est terminé
+    def finDePartie(self,mappe,infoJoueurs):
+        pass
      
     # Méthodes définies seulement dans la classe de base
 
