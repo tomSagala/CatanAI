@@ -4,6 +4,8 @@
 
 from Joueur import *
 from Mappe import *
+from random import randint
+import random
 
 
 ################## Joueur Intelligent
@@ -21,7 +23,8 @@ class JoueurAI(Joueur):
         self.phase = "COLONIEROUTE"
         self.constructionOuAchat = "COLONIE"
         self.valeurGeneralePrecedente = 100
-
+        self.noRand = 0
+        self.noDefiened = 0
         import csv
         with open('catan.txt', 'rt') as f:
             reader = csv.reader(f, delimiter=' ', skipinitialspace=True)
@@ -90,7 +93,16 @@ class JoueurAI(Joueur):
         while len(valeurs) > 0 and action is None:
 
             favoriteAction = valeurs[0][1]
-            valeurs.pop(0)
+
+            randomChance = 100.0/(float(valeurs[0][0])+100.0)
+
+            if random.uniform(0.0, 1.0) < randomChance:
+                rand = randint(0,len(valeurs)-1)
+                favoriteAction = valeurs[rand][1]
+                self.noRand += 1
+            else :
+                valeurs.pop(0)
+                self.noDefiened +=1
 
             if favoriteAction is "actionVille":
                 action = self.actionAjouterVille(actionsPossibles)
@@ -111,8 +123,11 @@ class JoueurAI(Joueur):
                 action = self.actionEchangerRessources(actionsPossibles)
 
         if action is not None:
+            self.actionsPrecedentes.append(action)
             return action
 
+
+        self.actionsPrecedentes.append(Action.TERMINER)
         print 'TERMINER'
         return Action.TERMINER
 
