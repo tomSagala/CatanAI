@@ -7,11 +7,11 @@ from Mappe import *
 
 
 ################## Joueur Intelligent
-class JoueurAI(Joueur):
+class DumbAI(Joueur):
 
     
     def __init__(self,id):
-        super(JoueurAI,self).__init__(id)
+        super(DumbAI,self).__init__(id)
 
         self.premiereColonie = {}
         self.premiereIntersectionRoute = {}
@@ -22,24 +22,21 @@ class JoueurAI(Joueur):
         self.constructionOuAchat = "COLONIE"
         self.valeurGeneralePrecedente = 100
 
-        import csv
-        with open('catan.txt', 'rt') as f:
-            reader = csv.reader(f, delimiter=' ', skipinitialspace=True)
 
-            cols = next(reader)
 
-        self.valeurActionEchanger = cols[0]  #on assigne une valeur à chaque action
-        self.valeurActionVille = cols[1]
-        self.valeurActionColonie = cols[2]
-        self.valeurActionRoute = cols[3]
-        self.valeurActionAcheterCarte = cols[4]
-        self.valeurActionJouerCarteChevalier = cols[5]
+        self.valeurActionEchanger = 100  #on assigne une valeur à chaque action
+        self.valeurActionVille = 100
+        self.valeurActionColonie = 100
+        self.valeurActionRoute = 101
+        self.valeurActionAcheterCarte = 100
+        self.valeurActionJouerCarteChevalier = 100
 
         #tableau des valeurs des actions
-        self.valeursActions = sorted([(self.valeurActionEchanger, "actionEchanger"), (self.valeurActionVille, "actionVille"), (self.valeurActionColonie, "actionColonie"), (self.valeurActionRoute, "actionRoute"), (self.valeurActionAcheterCarte, "actionAcheterCarte"), (self.valeurActionJouerCarteChevalier, "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        self.valeursActions = [self.valeurActionEchanger, self.valeurActionVille, self.valeurActionColonie, self.valeurActionRoute, self.valeurActionAcheterCarte, self.valeurActionJouerCarteChevalier]
 
         #tableau des actions du tour precedent
         self.actionsPrecedentes = []
+
 
     def premierTour(self,mappe):
         
@@ -84,74 +81,32 @@ class JoueurAI(Joueur):
         if self.possibleAcheterCarte():
             actionsPossibles.append(Action.ACHETER_CARTE)
 
-        action = None
-        valeurs = self.valeursActions
-
-        while len(valeurs) > 0 and action is None:
-
-            favoriteAction = valeurs[0][1]
-            valeurs.pop(0)
-
-            if favoriteAction is "actionVille":
-                action = self.actionAjouterVille(actionsPossibles)
-
-            elif favoriteAction is "actionColonnie":
-                action = self.actionAjouterColonie(actionsPossibles)
-
-            elif favoriteAction is "actionEchanger":
-                action = self.actionAjouterRoute(actionsPossibles)
-
-            elif favoriteAction is "actionRoute":
-                action = self.actionAcheterCarte(actionsPossibles)
-
-            elif favoriteAction is "actionAcheterCarte":
-                action = self.actionJouerChevalier(actionsPossibles)
-
-            elif favoriteAction is "actionJouerCarteChevalier":
-                action = self.actionEchangerRessources(actionsPossibles)
-
-        if action is not None:
-            return action
-
-        print 'TERMINER'
-        return Action.TERMINER
-
-    def actionAjouterVille(self, actionsPossibles):
-        for a in actionsPossibles:
+        
+        for a in actionsPossibles:  #Faire en sorte de créer une ville obligatoirement si c'est possible
             if type(a) is not int:
                 if a[0] == Action.AJOUTER_VILLE:
                     return a
-        return None
-
-    def actionAjouterColonie(self, actionsPossibles):
-        for a in actionsPossibles:
+                
+        for a in actionsPossibles:  #Faire en sorte de créer une colonie obligatoirement si c'est possible
             if type(a) is not int:
                 if a[0] == Action.AJOUTER_COLONIE:
                     return a
-        return None
 
-    def actionAjouterRoute(self, actionsPossibles):
         for a in actionsPossibles:
             if type(a) is not int:
                 if a[0] == Action.AJOUTER_ROUTE:
                     return a
-        return None
 
-    def actionAcheterCarte(self, actionsPossibles):
         for a in actionsPossibles:
             if type(a) is int:
                 if self.possibleAcheterCarte():
                     return (Action.ACHETER_CARTE,[])
-        return None
 
-    def actionJouerChevalier(self, actionsPossibles):
         for a in actionsPossibles:
             if type(a) is not int:
                 if a[0] == Action.JOUER_CARTE_CHEVALIER:
                     return a
-        return None
-
-    def actionEchangerRessources(self, actionsPossibles):
+                
         for a in actionsPossibles:
             if type(a) is not int:
                 if a[0] == Action.ECHANGER_RESSOURCES:
@@ -159,18 +114,17 @@ class JoueurAI(Joueur):
                         return (Action.ECHANGER_RESSOURCES, self.deciderCommerce())
                     else:
                         return a
+                
+        print 'TERMINER'
+        return Action.TERMINER
 
-    def finDePartie(self,mappe,infoJoueurs):
-        import csv
-        with open('catan.txt', 'w') as f:
-            allo = csv.writer(f, delimiter=' ', skipinitialspace=True)
-            test = [self.valeurActionEchanger, self.valeurActionVille, self.valeurActionColonie,self.valeurActionRoute, self.valeurActionAcheterCarte, self.valeurActionJouerCarteChevalier]
-            allo.writerow(test)
+        
 
     def trouverMeilleureIntersectionColonie(self,mappe):
 
         meilleureValeurProduction = 0
         meilleureIntersection = 0
+
 
         for i in mappe.obtenirToutesLesIntersections(): #pour toutes les intersections
 

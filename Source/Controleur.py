@@ -174,6 +174,8 @@ class Controleur(object):
         for j in range(self._nombreJoueurs):
             if self._joueurs[j].nombrePointsVictoire() >= 10:
                 print self._joueurs[j].nom(),"a gagné la partie"
+                for k in range(self._nombreJoueurs):
+                    self._joueurs[k].finDePartie(self._mappe,self._infoJoueurs())
                 return True
         return False
 
