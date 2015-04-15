@@ -25,21 +25,38 @@ class JoueurAI(Joueur):
         self.valeurGeneralePrecedente = 100
         self.noRand = 0
         self.noDefiened = 0
-        import csv
-        with open('catan.txt', 'rt') as f:
-            reader = csv.reader(f, delimiter=' ', skipinitialspace=True)
 
-            cols = next(reader)
+        import json
+        with open('catan.json') as fichierCatan:
+            donneeCatan = json.load(fichierCatan)
 
-        self.valeurActionEchanger = cols[0]  #on assigne une valeur à chaque action
-        self.valeurActionVille = cols[1]
-        self.valeurActionColonie = cols[2]
-        self.valeurActionRoute = cols[3]
-        self.valeurActionAcheterCarte = cols[4]
-        self.valeurActionJouerCarteChevalier = cols[5]
+        debutValActionEchanger = donneeCatan["debutPartie"]["valActEchange"]
+        debutValActionVille = donneeCatan["debutPartie"]["valActVille"]
+        debutValActionColonie = donneeCatan["debutPartie"]["valActColonie"]
+        debutValActionRoute = donneeCatan["debutPartie"]["valActRoute"]
+        debutValActionAcheterCarte = donneeCatan["debutPartie"]["valActAcheter"]
+        debutValActionJouerCarteChevalier = donneeCatan["debutPartie"]["valActChevalier"]
+
+        miValActionEchanger = donneeCatan["debutPartie"]["valActEchange"]
+        miValActionVille = donneeCatan["debutPartie"]["valActVille"]
+        miValActionColonie = donneeCatan["debutPartie"]["valActColonie"]
+        miValActionRoute = donneeCatan["debutPartie"]["valActRoute"]
+        miValActionAcheterCarte = donneeCatan["debutPartie"]["valActAcheter"]
+        miValActionJouerCarteChevalier = donneeCatan["debutPartie"]["valActChevalier"]
+
+        finValActionEchanger = donneeCatan["debutPartie"]["valActEchange"]
+        finValActionVille = donneeCatan["debutPartie"]["valActVille"]
+        finValActionColonie = donneeCatan["debutPartie"]["valActColonie"]
+        finValActionRoute = donneeCatan["debutPartie"]["valActRoute"]
+        finValActionAcheterCarte = donneeCatan["debutPartie"]["valActAcheter"]
+        finValActionJouerCarteChevalier = donneeCatan["debutPartie"]["valActChevalier"]
 
         #tableau des valeurs des actions
-        self.valeursActions = sorted([(self.valeurActionEchanger, "actionEchanger"), (self.valeurActionVille, "actionVille"), (self.valeurActionColonie, "actionColonie"), (self.valeurActionRoute, "actionRoute"), (self.valeurActionAcheterCarte, "actionAcheterCarte"), (self.valeurActionJouerCarteChevalier, "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursDebut = sorted([(debutValActionEchanger, "actionEchanger"), (debutValActionVille, "actionVille"), (debutValActionColonie, "actionColonie"), (debutValActionRoute, "actionRoute"), (debutValActionAcheterCarte, "actionAcheterCarte"), (debutValActionJouerCarteChevalier, "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursMi = sorted([(miValActionEchanger, "actionEchanger"), (miValActionVille, "actionVille"), (miValActionColonie, "actionColonie"), (miValActionRoute, "actionRoute"), (miValActionAcheterCarte, "actionAcheterCarte"), (miValActionJouerCarteChevalier, "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursFin = sorted([(finValActionEchanger, "actionEchanger"), (finValActionVille, "actionVille"), (finValActionColonie, "actionColonie"), (finValActionRoute, "actionRoute"), (finValActionAcheterCarte, "actionAcheterCarte"), (finValActionJouerCarteChevalier, "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+
+        self.valeursActions = [valeursDebut, valeursMi, valeursFin]
 
         #tableau des actions du tour precedent
         self.actionsPrecedentes = []
