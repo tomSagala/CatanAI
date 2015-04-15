@@ -15,6 +15,7 @@ class JoueurAI(Joueur):
     def __init__(self,id):
         super(JoueurAI,self).__init__(id)
 
+        self.gamePhase = 0;
         self.premiereColonie = {}
         self.premiereIntersectionRoute = {}
         self.deuxiemeColonie = {}
@@ -89,15 +90,15 @@ class JoueurAI(Joueur):
 
         leaderPoints = max(infoJoueurs,key=lambda x:x[0])[0]
 
-        if leaderPoints < 5:
-            phase = 0
-        elif leaderPoints > 7:
-            phase = 2
-        else:
-            phase = 1
+        if leaderPoints < 5 and self.gamePhase is not 0:
+            self.gamePhase = 0
+        elif leaderPoints > 7 and self.gamePhase is not 2:
+            self.gamePhase = 2
+        elif self.gamePhase is not 1:
+            self.gamePhase = 1
 
         action = None
-        valeurs = self.valeursActions
+        valeurs = self.valeursActions[self.gamePhase]
 
         while len(valeurs) > 0 and action is None:
 
@@ -388,17 +389,39 @@ class JoueurAI(Joueur):
     
     def ressourceEnManque(self):
 
-        if self.quantiteRessources(Ressource.BLE) == 0:
-            return Ressource.BLE
-        if self.quantiteRessources(Ressource.ARGILE) == 0:
-            return Ressource.ARGILE
-        if self.quantiteRessources(Ressource.BOIS) == 0:
-            return Ressource.BOIS
-        if self.quantiteRessources(Ressource.LAINE) == 0:
-            return Ressource.LAINE
-        if self.quantiteRessources(Ressource.MINERAL) == 0:
-            return Ressource.MINERAL
-        
+        valeurs = self.valeursActions[self.gamePhase]
+
+        while len(valeurs) > 0 and action is None:
+
+            favoriteAction = valeurs[0][1]
+
+            valeurs.pop(0)
+
+            if favoriteAction is "actionVille" and (not self.quantiteRessources(Ressource.BLE) >= 2 or not self.quantiteRessources(Ressource.MINERAL) >= 3):
+                if self.quantiteRessources(Ressource.BLE) >= 2 :
+                    return Ressource.BLE
+                return Ressource.MINERAL
+
+            elif favoriteAction is "actionColonnie" and (not self.quantiteRessources(Ressource.BLE) >= 1 or not self.quantiteRessources(Ressource.ARGILE) >= 1 or not self.quantiteRessources(Ressource.BOIS) >= 1 or not self.quantiteRessources(Ressource.LAINE) >= 1):
+                if self.quantiteRessources(Ressource.BLE) >= 1:
+                    return Ressource.BLE
+                if self.quantiteRessources(Ressource.ARGILE) >= 1:
+                    return Ressource.ARGILE
+                if self.quantiteRessources(Ressource.BOIS) >= 1:
+                    return Ressource.BOIS
+                return Ressource.LAINE
+
+            elif favoriteAction is "actionRoute" and(not self.quantiteRessources(Ressource.BOIS) >= 1 or not self.quantiteRessources(Ressource.ARGILE) >= 1):
+                if self.quantiteRessources(Ressource.BOIS) >= 1:
+                    return Ressource.BOIS
+                return Ressource.ARGILE
+
+            elif favoriteAction is "actionAcheterCarte"(not self.quantiteRessources(Ressource.BLE) >= 1 or not self.quantiteRessources(Ressource.LAINE) >= 1 or not self.quantiteRessources(Ressource.MINERAL) >= 1):
+                if self.quantiteRessources(Ressource.BLE) >= 1:
+                    return Ressource.BLE
+                if self.quantiteRessources(Ressource.LAINE) >= 1:
+                    return Ressource.LAINE
+                return Ressource.MINERAL
 
         return False
 
