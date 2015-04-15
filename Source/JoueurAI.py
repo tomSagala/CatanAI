@@ -22,19 +22,18 @@ class JoueurAI(Joueur):
         self.constructionOuAchat = "COLONIE"
         self.valeurGeneralePrecedente = 100
 
-        self.valeurActionEchanger = 100  #on assigne une valeur à chaque action
-        self.valeurActionVille = 100
-        self.valeurActionColonie = 100
-        self.valeurActionRoute = 101
-        self.valeurActionAcheterCarte = 100
+        self.valeurActionEchanger = 99  #on assigne une valeur à chaque action
+        self.valeurActionVille = 104
+        self.valeurActionColonie = 103
+        self.valeurActionRoute = 102
+        self.valeurActionAcheterCarte = 101
         self.valeurActionJouerCarteChevalier = 100
 
         #tableau des valeurs des actions
-        self.valeursActions = [self.valeurActionEchanger, self.valeurActionVille, self.valeurActionColonie, self.valeurActionRoute, self.valeurActionAcheterCarte, self.valeurActionJouerCarteChevalier]
+        self.valeursActions = sorted([(self.valeurActionEchanger, "actionEchanger"), (self.valeurActionVille, "actionVille"), (self.valeurActionColonie, "actionColonie"), (self.valeurActionRoute, "actionRoute"), (self.valeurActionAcheterCarte, "actionAcheterCarte"), (self.valeurActionJouerCarteChevalier, "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
 
         #tableau des actions du tour precedent
         self.actionsPrecedentes = []
-
 
     def premierTour(self,mappe):
         
@@ -79,32 +78,74 @@ class JoueurAI(Joueur):
         if self.possibleAcheterCarte():
             actionsPossibles.append(Action.ACHETER_CARTE)
 
-        
-        for a in actionsPossibles:  #Faire en sorte de créer une ville obligatoirement si c'est possible
+        action = None
+        valeurs = self.valeursActions
+
+        while len(valeurs) > 0 and action is None:
+
+            favoriteAction = valeurs[0][1]
+            valeurs.pop(0)
+
+            if favoriteAction is "actionVille":
+                action = self.actionAjouterVille(actionsPossibles)
+
+            elif favoriteAction is "actionColonnie":
+                action = self.actionAjouterColonie(actionsPossibles)
+
+            elif favoriteAction is "actionEchanger":
+                action = self.actionAjouterRoute(actionsPossibles)
+
+            elif favoriteAction is "actionRoute":
+                action = self.actionAcheterCarte(actionsPossibles)
+
+            elif favoriteAction is "actionAcheterCarte":
+                action = self.actionJouerChevalier(actionsPossibles)
+
+            elif favoriteAction is "actionJouerCarteChevalier":
+                action = self.actionEchangerRessources(actionsPossibles)
+
+        if action is not None:
+            return action
+
+        print 'TERMINER'
+        return Action.TERMINER
+
+    def actionAjouterVille(self, actionsPossibles):
+        for a in actionsPossibles:
             if type(a) is not int:
                 if a[0] == Action.AJOUTER_VILLE:
                     return a
-                
-        for a in actionsPossibles:  #Faire en sorte de créer une colonie obligatoirement si c'est possible
+        return None
+
+    def actionAjouterColonie(self, actionsPossibles):
+        for a in actionsPossibles:
             if type(a) is not int:
                 if a[0] == Action.AJOUTER_COLONIE:
                     return a
+        return None
 
+    def actionAjouterRoute(self, actionsPossibles):
         for a in actionsPossibles:
             if type(a) is not int:
                 if a[0] == Action.AJOUTER_ROUTE:
                     return a
+        return None
 
+    def actionAcheterCarte(self, actionsPossibles):
         for a in actionsPossibles:
             if type(a) is int:
                 if self.possibleAcheterCarte():
                     return (Action.ACHETER_CARTE,[])
+        return None
 
+    def actionJouerChevalier(self, actionsPossibles):
         for a in actionsPossibles:
             if type(a) is not int:
                 if a[0] == Action.JOUER_CARTE_CHEVALIER:
                     return a
-                
+        return None
+
+    def actionEchangerRessources(self, actionsPossibles):
         for a in actionsPossibles:
             if type(a) is not int:
                 if a[0] == Action.ECHANGER_RESSOURCES:
@@ -112,17 +153,13 @@ class JoueurAI(Joueur):
                         return (Action.ECHANGER_RESSOURCES, self.deciderCommerce())
                     else:
                         return a
-                
-        print 'TERMINER'
-        return Action.TERMINER
-
+        return None
         
 
     def trouverMeilleureIntersectionColonie(self,mappe):
 
         meilleureValeurProduction = 0
         meilleureIntersection = 0
-
 
         for i in mappe.obtenirToutesLesIntersections(): #pour toutes les intersections
 
