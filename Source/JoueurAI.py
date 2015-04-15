@@ -87,6 +87,15 @@ class JoueurAI(Joueur):
         if self.possibleAcheterCarte():
             actionsPossibles.append(Action.ACHETER_CARTE)
 
+        leaderPoints = max(infoJoueurs,key=lambda x:x[0])[0]
+
+        if leaderPoints < 5:
+            phase = 0
+        elif leaderPoints > 7:
+            phase = 2
+        else:
+            phase = 1
+
         action = None
         valeurs = self.valeursActions
 
@@ -123,7 +132,7 @@ class JoueurAI(Joueur):
                 action = self.actionEchangerRessources(actionsPossibles)
 
         if action is not None:
-            self.actionsPrecedentes.append(action)
+            self.actionsPrecedentes.append((action, phase, leaderPoints, self._pointsVictoire))
             return action
 
 
