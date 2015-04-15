@@ -150,7 +150,7 @@ class JoueurAI(Joueur):
                 action = self.actionEchangerRessources(actionsPossibles)
 
         if action is not None:
-            self.actionsPrecedentes.append((action, phase, leaderPoints, self._pointsVictoire))
+            self.actionsPrecedentes.append((action, self.gamePhase, leaderPoints, self._pointsVictoire))
             return action
 
 
@@ -408,7 +408,7 @@ class JoueurAI(Joueur):
 
         valeurs = self.valeursActions[self.gamePhase]
 
-        while len(valeurs) > 0 and action is None:
+        while len(valeurs) > 0:
 
             favoriteAction = valeurs[0][1]
 
@@ -428,12 +428,12 @@ class JoueurAI(Joueur):
                     return Ressource.BOIS
                 return Ressource.LAINE
 
-            elif favoriteAction is "actionRoute" and(not self.quantiteRessources(Ressource.BOIS) >= 1 or not self.quantiteRessources(Ressource.ARGILE) >= 1):
+            elif favoriteAction is "actionRoute" and (not self.quantiteRessources(Ressource.BOIS) >= 1 or not self.quantiteRessources(Ressource.ARGILE) >= 1):
                 if self.quantiteRessources(Ressource.BOIS) >= 1:
                     return Ressource.BOIS
                 return Ressource.ARGILE
 
-            elif favoriteAction is "actionAcheterCarte"(not self.quantiteRessources(Ressource.BLE) >= 1 or not self.quantiteRessources(Ressource.LAINE) >= 1 or not self.quantiteRessources(Ressource.MINERAL) >= 1):
+            elif favoriteAction is "actionAcheterCarte" and (not self.quantiteRessources(Ressource.BLE) >= 1 or not self.quantiteRessources(Ressource.LAINE) >= 1 or not self.quantiteRessources(Ressource.MINERAL) >= 1):
                 if self.quantiteRessources(Ressource.BLE) >= 1:
                     return Ressource.BLE
                 if self.quantiteRessources(Ressource.LAINE) >= 1:
