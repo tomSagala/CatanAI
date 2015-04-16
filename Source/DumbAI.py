@@ -148,7 +148,7 @@ class DumbAI(Joueur):
 
         print "COLONIE"
         print meilleureIntersection._id
-                                              
+
         return meilleureIntersection
 
             
@@ -167,7 +167,7 @@ class DumbAI(Joueur):
                     return i
             return coinsInteressants[0]  
         else:
-            meilleureIntersection = None
+            meilleureIntersection = intersection.obtenirVoisins()[0]
             meilleureValeurProduction = 0
             for i in intersection.obtenirVoisins():
                 if mappe.peutConstruireOccupationInitial(i._id): #si on peut poser une colonie sur l'intersection
@@ -176,7 +176,7 @@ class DumbAI(Joueur):
                     for t in i.obtenirTerritoiresVoisins(): #pour tous les territoires de l'intersection
                         valeurProduction += self.obtenirValeurProductionChiffre(t._valeur) #on accumule les valeurs de production
 
-                    if valeurProduction > meilleureValeurProduction: #comparaison avec la meilleure valeure actuelle
+                    if valeurProduction >= meilleureValeurProduction: #comparaison avec la meilleure valeure actuelle
                         meilleureValeurProduction = valeurProduction
                         meilleureIntersection = i
             return meilleureIntersection

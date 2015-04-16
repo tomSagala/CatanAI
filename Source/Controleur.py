@@ -325,7 +325,7 @@ class Controleur(object):
 
 
 c = Controleur(['AI','Dumb','Dumb','Dumb'])
-while True:
+for i in range(0,3000):
     c.jouer()
 
 

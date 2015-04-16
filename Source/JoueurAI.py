@@ -29,26 +29,26 @@ class JoueurAI(Joueur):
         self.noDefiened = 0
 
         import json
-        with open('catan.json') as fichierCatan:
+        with open('catan.json', 'r') as fichierCatan:
             donneeCatan = json.load(fichierCatan)
 
         debutValActionEchanger = donneeCatan["debutPartie"]["actionEchanger"]
         debutValActionVille = donneeCatan["debutPartie"]["actionVille"]
-        debutValActionColonie = donneeCatan["debutPartie"]["actionColonnie"]
+        debutValActionColonie = donneeCatan["debutPartie"]["actionColonie"]
         debutValActionRoute = donneeCatan["debutPartie"]["actionRoute"]
         debutValActionAcheterCarte = donneeCatan["debutPartie"]["actionAcheterCarte"]
         debutValActionJouerCarteChevalier = donneeCatan["debutPartie"]["actionJouerCarteChevalier"]
 
         miValActionEchanger = donneeCatan["miPartie"]["actionEchanger"]
         miValActionVille = donneeCatan["miPartie"]["actionVille"]
-        miValActionColonie = donneeCatan["miPartie"]["actionColonnie"]
+        miValActionColonie = donneeCatan["miPartie"]["actionColonie"]
         miValActionRoute = donneeCatan["miPartie"]["actionRoute"]
         miValActionAcheterCarte = donneeCatan["miPartie"]["actionAcheterCarte"]
         miValActionJouerCarteChevalier = donneeCatan["miPartie"]["actionJouerCarteChevalier"]
 
         finValActionEchanger = donneeCatan["finPartie"]["actionEchanger"]
         finValActionVille = donneeCatan["finPartie"]["actionVille"]
-        finValActionColonie = donneeCatan["finPartie"]["actionColonnie"]
+        finValActionColonie = donneeCatan["finPartie"]["actionColonie"]
         finValActionRoute = donneeCatan["finPartie"]["actionRoute"]
         finValActionAcheterCarte = donneeCatan["finPartie"]["actionAcheterCarte"]
         finValActionJouerCarteChevalier = donneeCatan["finPartie"]["actionJouerCarteChevalier"]
@@ -112,13 +112,13 @@ class JoueurAI(Joueur):
             self.gamePhase = 0
         elif leaderPoints > 7 and self.gamePhase is not 2:
             self.gamePhase = 2
-        elif self.gamePhase is not 1:
+        elif leaderPoints >= 5 and leaderPoints < 7 and self.gamePhase is not 1 :
             self.gamePhase = 1
 
         action = None
         valeurs = copy.deepcopy(self.valeursActions[self.gamePhase])
-
-        while len(valeurs) > 0 and action is None:
+        favoriteAction = ""
+        while len(valeurs) > 0 and action is None and len(actionsPossibles) > 0:
 
             favoriteAction = valeurs[0][1]
 
@@ -128,6 +128,7 @@ class JoueurAI(Joueur):
                 rand = randint(0,len(valeurs)-1)
                 favoriteAction = valeurs[rand][1]
                 self.noRand += 1
+                valeurs.pop(rand)
             else :
                 valeurs.pop(0)
                 self.noDefiened +=1
@@ -135,7 +136,7 @@ class JoueurAI(Joueur):
             if favoriteAction is "actionVille":
                 action = self.actionAjouterVille(actionsPossibles)
 
-            elif favoriteAction is "actionColonnie":
+            elif favoriteAction is "actionColonie":
                 action = self.actionAjouterColonie(actionsPossibles)
 
             elif favoriteAction is "actionEchanger":
@@ -151,7 +152,7 @@ class JoueurAI(Joueur):
                 action = self.actionEchangerRessources(actionsPossibles)
 
         if action is not None:
-            self.actionsPrecedentes[self.gamePhase].append((action, leaderPoints, self._pointsVictoire))
+            self.actionsPrecedentes[self.gamePhase].append((favoriteAction, leaderPoints, self._pointsVictoire))
             return action
 
 
@@ -205,23 +206,25 @@ class JoueurAI(Joueur):
 
     def finDePartie(self,mappe,infoJoueurs):
         import json
-        with open('catan.json') as fichierCatan:
+        with open('catan.json', 'w') as fichierCatan:
             dict = self.calculFinDePartie()
             json.dump(dict, fichierCatan)
 
-        #import csv
-        #with open('catan.txt', 'w') as f:
-        #    allo = csv.writer(f, delimiter=' ', skipinitialspace=True)
-        #    test = [self.valeurActionEchanger, self.valeurActionVille, self.valeurActionColonie,self.valeurActionRoute, self.valeurActionAcheterCarte, self.valeurActionJouerCarteChevalier]
-        #    allo.writerow(test)
+        import csv
+        with open('catan.csv', 'ab') as f:
+            csvWriter = csv.writer(f, delimiter=' ', skipinitialspace=True)
+            if self._pointsVictoire >= 10:
+                csvWriter.writerow([1])
+            else:
+                csvWriter.writerow([0])
 
     def calculFinDePartie(self):
         dictDebut = {}
         dictMilieu = {}
         dictFin = {}
 
-        for i in range (0,2):
-            for j in range(0,5):
+        for i in range (0,3):
+            for j in range(0,6):
                 if i==0:
                     dictDebut[self.valeursActions[i][j][1]] = self.valeursActions[i][j][0]
                 elif i==1:
@@ -229,31 +232,30 @@ class JoueurAI(Joueur):
                 elif i==2:
                     dictFin[self.valeursActions[i][j][1]] = self.valeursActions[i][j][0]
 
-        #debut de partie  1pts si on est en tete sinon 1 - difference avec la tete
-        rewardDebut = 1 + self.actionsPrecedentes[1][0][2] - self.actionsPrecedentes[1][0][1]
+        #bonus pour le resultat final
+        rewardPartie=0
+        if self._pointsVictoire >= 10:
+            rewardPartie=5
+        elif self._pointsVictoire > 7:
+            rewardPartie=2
+        elif self._pointsVictoire < 5:
+            rewardPartie=-2
 
-        for i in range(0,5):
-                dictDebut[self.valeursActions[0][i][1]] += rewardDebut
+        #debut de partie  2pts si on est en tete sinon 2 - difference avec la tete (min -2)
+        rewardDebut = max(2 + self.actionsPrecedentes[0][len(self.actionsPrecedentes[0])-1][2] - self.actionsPrecedentes[0][len(self.actionsPrecedentes[0])-1][1],-2)
 
-        rewardMid = 1 + self.actionsPrecedentes[2][0][2] - self.actionsPrecedentes[2][0][1]
+        for i in range(0,len(self.actionsPrecedentes[0])):
+                dictDebut[self.actionsPrecedentes[0][i][0]]= max(0, dictDebut[self.actionsPrecedentes[0][i][0]] + rewardDebut + rewardPartie)
 
-        for i in range(0,5):
-                dictMilieu[self.valeursActions[0][i][1]] += rewardMid
+        rewardMid = max(2 + self.actionsPrecedentes[1][len(self.actionsPrecedentes[1])-1][2] -  self.actionsPrecedentes[1][len(self.actionsPrecedentes[1])-1][1],-2)
 
-        rewardEnd = 1 + self._pointsVictoire - 10
+        for i in range(0,len(self.actionsPrecedentes[1])):
+                dictMilieu[self.actionsPrecedentes[1][i][0]] = max(0, dictMilieu[self.actionsPrecedentes[1][i][0]] + rewardMid + rewardPartie)
 
-        for i in range(0,5):
-                dictMilieu[self.valeursActions[0][i][1]] += rewardEnd
+        rewardEnd = max(2 + self._pointsVictoire - 10,-2)
 
-        #on applique le bonus de fin de partie un second fois mais surtout pour bonifier la stratégie globale
-        for i in range (0,2):
-            for j in range(0,5):
-                if i==0:
-                    dictDebut[self.valeursActions[i][j][1]] += rewardEnd
-                elif i==1:
-                    dictMilieu[self.valeursActions[i][j][1]] += rewardEnd
-                elif i==2:
-                    dictFin[self.valeursActions[i][j][1]] += rewardEnd
+        for i in range(0,len(self.actionsPrecedentes[2])):
+                dictFin[self.actionsPrecedentes[2][i][0]] = max(0, dictFin[self.actionsPrecedentes[2][i][0]] + rewardEnd + rewardPartie)
 
         gameDict = {}
         gameDict["debutPartie"] = dictDebut
@@ -308,7 +310,7 @@ class JoueurAI(Joueur):
                     return i
             return coinsInteressants[0]  
         else:
-            meilleureIntersection = None
+            meilleureIntersection = intersection.obtenirVoisins()[0]
             meilleureValeurProduction = 0
             for i in intersection.obtenirVoisins():
                 if mappe.peutConstruireOccupationInitial(i._id): #si on peut poser une colonie sur l'intersection
@@ -317,7 +319,7 @@ class JoueurAI(Joueur):
                     for t in i.obtenirTerritoiresVoisins(): #pour tous les territoires de l'intersection
                         valeurProduction += self.obtenirValeurProductionChiffre(t._valeur) #on accumule les valeurs de production
 
-                    if valeurProduction > meilleureValeurProduction: #comparaison avec la meilleure valeure actuelle
+                    if valeurProduction >= meilleureValeurProduction: #comparaison avec la meilleure valeure actuelle
                         meilleureValeurProduction = valeurProduction
                         meilleureIntersection = i
             return meilleureIntersection
@@ -472,7 +474,7 @@ class JoueurAI(Joueur):
                     return Ressource.BLE
                 return Ressource.MINERAL
 
-            elif favoriteAction is "actionColonnie" and (not self.quantiteRessources(Ressource.BLE) >= 1 or not self.quantiteRessources(Ressource.ARGILE) >= 1 or not self.quantiteRessources(Ressource.BOIS) >= 1 or not self.quantiteRessources(Ressource.LAINE) >= 1):
+            elif favoriteAction is "actionColonie" and (not self.quantiteRessources(Ressource.BLE) >= 1 or not self.quantiteRessources(Ressource.ARGILE) >= 1 or not self.quantiteRessources(Ressource.BOIS) >= 1 or not self.quantiteRessources(Ressource.LAINE) >= 1):
                 if self.quantiteRessources(Ressource.BLE) >= 1:
                     return Ressource.BLE
                 if self.quantiteRessources(Ressource.ARGILE) >= 1:
