@@ -6,6 +6,7 @@ from Joueur import *
 from Mappe import *
 from random import randint
 import random
+import copy
 
 
 ################## Joueur Intelligent
@@ -31,26 +32,26 @@ class JoueurAI(Joueur):
         with open('catan.json') as fichierCatan:
             donneeCatan = json.load(fichierCatan)
 
-        debutValActionEchanger = donneeCatan["debutPartie"]["valActEchange"]
-        debutValActionVille = donneeCatan["debutPartie"]["valActVille"]
-        debutValActionColonie = donneeCatan["debutPartie"]["valActColonie"]
-        debutValActionRoute = donneeCatan["debutPartie"]["valActRoute"]
-        debutValActionAcheterCarte = donneeCatan["debutPartie"]["valActAcheter"]
-        debutValActionJouerCarteChevalier = donneeCatan["debutPartie"]["valActChevalier"]
+        debutValActionEchanger = donneeCatan["debutPartie"]["actionEchanger"]
+        debutValActionVille = donneeCatan["debutPartie"]["actionVille"]
+        debutValActionColonie = donneeCatan["debutPartie"]["actionColonnie"]
+        debutValActionRoute = donneeCatan["debutPartie"]["actionRoute"]
+        debutValActionAcheterCarte = donneeCatan["debutPartie"]["actionAcheterCarte"]
+        debutValActionJouerCarteChevalier = donneeCatan["debutPartie"]["actionJouerCarteChevalier"]
 
-        miValActionEchanger = donneeCatan["debutPartie"]["valActEchange"]
-        miValActionVille = donneeCatan["debutPartie"]["valActVille"]
-        miValActionColonie = donneeCatan["debutPartie"]["valActColonie"]
-        miValActionRoute = donneeCatan["debutPartie"]["valActRoute"]
-        miValActionAcheterCarte = donneeCatan["debutPartie"]["valActAcheter"]
-        miValActionJouerCarteChevalier = donneeCatan["debutPartie"]["valActChevalier"]
+        miValActionEchanger = donneeCatan["miPartie"]["actionEchanger"]
+        miValActionVille = donneeCatan["miPartie"]["actionVille"]
+        miValActionColonie = donneeCatan["miPartie"]["actionColonnie"]
+        miValActionRoute = donneeCatan["miPartie"]["actionRoute"]
+        miValActionAcheterCarte = donneeCatan["miPartie"]["actionAcheterCarte"]
+        miValActionJouerCarteChevalier = donneeCatan["miPartie"]["actionJouerCarteChevalier"]
 
-        finValActionEchanger = donneeCatan["debutPartie"]["valActEchange"]
-        finValActionVille = donneeCatan["debutPartie"]["valActVille"]
-        finValActionColonie = donneeCatan["debutPartie"]["valActColonie"]
-        finValActionRoute = donneeCatan["debutPartie"]["valActRoute"]
-        finValActionAcheterCarte = donneeCatan["debutPartie"]["valActAcheter"]
-        finValActionJouerCarteChevalier = donneeCatan["debutPartie"]["valActChevalier"]
+        finValActionEchanger = donneeCatan["finPartie"]["actionEchanger"]
+        finValActionVille = donneeCatan["finPartie"]["actionVille"]
+        finValActionColonie = donneeCatan["finPartie"]["actionColonnie"]
+        finValActionRoute = donneeCatan["finPartie"]["actionRoute"]
+        finValActionAcheterCarte = donneeCatan["finPartie"]["actionAcheterCarte"]
+        finValActionJouerCarteChevalier = donneeCatan["finPartie"]["actionJouerCarteChevalier"]
 
         #tableau des valeurs des actions
         valeursDebut = sorted([(debutValActionEchanger, "actionEchanger"), (debutValActionVille, "actionVille"), (debutValActionColonie, "actionColonie"), (debutValActionRoute, "actionRoute"), (debutValActionAcheterCarte, "actionAcheterCarte"), (debutValActionJouerCarteChevalier, "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
@@ -60,7 +61,7 @@ class JoueurAI(Joueur):
         self.valeursActions = [valeursDebut, valeursMi, valeursFin]
 
         #tableau des actions du tour precedent
-        self.actionsPrecedentes = []
+        self.actionsPrecedentes = [[],[],[]]
 
     def premierTour(self,mappe):
         
@@ -115,7 +116,7 @@ class JoueurAI(Joueur):
             self.gamePhase = 1
 
         action = None
-        valeurs = self.valeursActions[self.gamePhase]
+        valeurs = copy.deepcopy(self.valeursActions[self.gamePhase])
 
         while len(valeurs) > 0 and action is None:
 
@@ -150,7 +151,7 @@ class JoueurAI(Joueur):
                 action = self.actionEchangerRessources(actionsPossibles)
 
         if action is not None:
-            self.actionsPrecedentes.append((action, self.gamePhase, leaderPoints, self._pointsVictoire))
+            self.actionsPrecedentes[self.gamePhase].append((action, leaderPoints, self._pointsVictoire))
             return action
 
 
@@ -203,11 +204,63 @@ class JoueurAI(Joueur):
                         return a
 
     def finDePartie(self,mappe,infoJoueurs):
-        import csv
-        with open('catan.txt', 'w') as f:
-            allo = csv.writer(f, delimiter=' ', skipinitialspace=True)
-            test = [self.valeurActionEchanger, self.valeurActionVille, self.valeurActionColonie,self.valeurActionRoute, self.valeurActionAcheterCarte, self.valeurActionJouerCarteChevalier]
-            allo.writerow(test)
+        import json
+        with open('catan.json') as fichierCatan:
+            dict = self.calculFinDePartie()
+            json.dump(dict, fichierCatan)
+
+        #import csv
+        #with open('catan.txt', 'w') as f:
+        #    allo = csv.writer(f, delimiter=' ', skipinitialspace=True)
+        #    test = [self.valeurActionEchanger, self.valeurActionVille, self.valeurActionColonie,self.valeurActionRoute, self.valeurActionAcheterCarte, self.valeurActionJouerCarteChevalier]
+        #    allo.writerow(test)
+
+    def calculFinDePartie(self):
+        dictDebut = {}
+        dictMilieu = {}
+        dictFin = {}
+
+        for i in range (0,2):
+            for j in range(0,5):
+                if i==0:
+                    dictDebut[self.valeursActions[i][j][1]] = self.valeursActions[i][j][0]
+                elif i==1:
+                    dictMilieu[self.valeursActions[i][j][1]] = self.valeursActions[i][j][0]
+                elif i==2:
+                    dictFin[self.valeursActions[i][j][1]] = self.valeursActions[i][j][0]
+
+        #debut de partie  1pts si on est en tete sinon 1 - difference avec la tete
+        rewardDebut = 1 + self.actionsPrecedentes[1][0][2] - self.actionsPrecedentes[1][0][1]
+
+        for i in range(0,5):
+                dictDebut[self.valeursActions[0][i][1]] += rewardDebut
+
+        rewardMid = 1 + self.actionsPrecedentes[2][0][2] - self.actionsPrecedentes[2][0][1]
+
+        for i in range(0,5):
+                dictMilieu[self.valeursActions[0][i][1]] += rewardMid
+
+        rewardEnd = 1 + self._pointsVictoire - 10
+
+        for i in range(0,5):
+                dictMilieu[self.valeursActions[0][i][1]] += rewardEnd
+
+        #on applique le bonus de fin de partie un second fois mais surtout pour bonifier la stratégie globale
+        for i in range (0,2):
+            for j in range(0,5):
+                if i==0:
+                    dictDebut[self.valeursActions[i][j][1]] += rewardEnd
+                elif i==1:
+                    dictMilieu[self.valeursActions[i][j][1]] += rewardEnd
+                elif i==2:
+                    dictFin[self.valeursActions[i][j][1]] += rewardEnd
+
+        gameDict = {}
+        gameDict["debutPartie"] = dictDebut
+        gameDict["miPartie"] = dictMilieu
+        gameDict["finPartie"] = dictFin
+
+        return gameDict
 
     def trouverMeilleureIntersectionColonie(self,mappe):
 
@@ -406,7 +459,7 @@ class JoueurAI(Joueur):
     
     def ressourceEnManque(self):
 
-        valeurs = self.valeursActions[self.gamePhase]
+        valeurs = copy.deepcopy(self.valeursActions[self.gamePhase])
 
         while len(valeurs) > 0:
 

@@ -325,6 +325,7 @@ class Controleur(object):
 
 
 c = Controleur(['AI','Dumb','Dumb','Dumb'])
-c.jouer()
+while True:
+    c.jouer()
 
 
