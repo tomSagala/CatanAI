@@ -204,7 +204,7 @@ class JoueurAI(Joueur):
                     else:
                         return a
 
-    def finDePartie(self,mappe,infoJoueurs):
+    def finDePartie(self,mappe,joueurID):
         import json
         with open('catan.json', 'w') as fichierCatan:
             dict = self.calculFinDePartie()
@@ -213,7 +213,7 @@ class JoueurAI(Joueur):
         import csv
         with open('catan.csv', 'ab') as f:
             csvWriter = csv.writer(f, delimiter=' ', skipinitialspace=True)
-            if self._pointsVictoire >= 10:
+            if self.id() is joueurID:
                 csvWriter.writerow([1])
             else:
                 csvWriter.writerow([0])
@@ -242,10 +242,12 @@ class JoueurAI(Joueur):
             rewardPartie=-2
 
         #debut de partie  2pts si on est en tete sinon 2 - difference avec la tete (min -2)
+        print self.actionsPrecedentes[0]
         rewardDebut = max(2 + self.actionsPrecedentes[0][len(self.actionsPrecedentes[0])-1][2] - self.actionsPrecedentes[0][len(self.actionsPrecedentes[0])-1][1],-2)
 
         for i in range(0,len(self.actionsPrecedentes[0])):
                 dictDebut[self.actionsPrecedentes[0][i][0]]= max(0, dictDebut[self.actionsPrecedentes[0][i][0]] + rewardDebut + rewardPartie)
+
         if len(self.actionsPrecedentes[1]) > 0:
             rewardMid = max(2 + self.actionsPrecedentes[1][len(self.actionsPrecedentes[1])-1][2] -  self.actionsPrecedentes[1][len(self.actionsPrecedentes[1])-1][1],-2)
 

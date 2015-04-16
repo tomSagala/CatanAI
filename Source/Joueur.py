@@ -110,7 +110,7 @@ class Joueur(object):
         return Action.TERMINER
 
     # Méthode additionnelle pour avertir que la partie est terminé
-    def finDePartie(self,mappe,infoJoueurs):
+    def finDePartie(self,mappe,joueurID):
         pass
      
     # Méthodes définies seulement dans la classe de base
