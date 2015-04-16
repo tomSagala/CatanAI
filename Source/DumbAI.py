@@ -115,7 +115,6 @@ class DumbAI(Joueur):
                     else:
                         return a
                 
-        print 'TERMINER'
         return Action.TERMINER
 
         
@@ -145,9 +144,6 @@ class DumbAI(Joueur):
                             if t._valeur == 6 or t._valeur == 8: #si la meilleure actuelle a un 6 ou un 8 (a eviter pour eloigner le brigand)
                                 meilleureValeurProduction = valeurProduction
                                 meilleureIntersection = i
-
-        print "COLONIE"
-        print meilleureIntersection._id
 
         return meilleureIntersection
 

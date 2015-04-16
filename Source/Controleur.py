@@ -50,25 +50,25 @@ class Controleur(object):
     def jouer(self):
         # Premier tour: chaque joueur place une colonie et une route
         for i in range(self._nombreJoueurs):
-            print 'Premier tour,', self._joueurs[i].nom()
+            #print 'Premier tour,', self._joueurs[i].nom()
             try:
                 (positionColonie, extremiteRoute) = self._joueurs[i].premierTour(self._mappe)
                 self._mappe._ajouterOccupationInitiale(positionColonie,Occupation.COLONIE,i)
                 self._joueurs[i].ajusterCapaciteEchange(self._mappe.obtenirIntersection(positionColonie))
                 self._mappe._ajouterRoute(positionColonie, extremiteRoute, i)
-                print 'Occupation placée avec succès'
+                #print 'Occupation placée avec succès'
             except RuntimeError as e:
                 print 'ERREUR:', e
 
         # Deuxième tour: en ordre inverse, chaque joueur place une seconde colonie et une seconde route
         for i in range(self._nombreJoueurs-1,-1,-1):
-            print 'Deuxième  tour,', self._joueurs[i].nom()
+            #print 'Deuxième  tour,', self._joueurs[i].nom()
             try:
                 (positionColonie, extremiteRoute) = self._joueurs[i].deuxiemeTour(self._mappe)
                 self._mappe._ajouterOccupationInitiale(positionColonie,Occupation.COLONIE,i)
                 self._joueurs[i].ajusterCapaciteEchange(self._mappe.obtenirIntersection(positionColonie))
                 self._mappe._ajouterRoute(positionColonie, extremiteRoute, i)
-                print 'Occupation placée avec succès'
+                #print 'Occupation placée avec succès'
                 
                 # Distribuer les ressources initiales
                 self._mappe._distribuerRessourcesInitiales(self._joueurs[i],positionColonie)
@@ -78,10 +78,10 @@ class Controleur(object):
 
 
 
-        print 'État après le placement initial:'
-        self._mappe.afficher()
+        #print 'État après le placement initial:'
+        #self._mappe.afficher()
 
-        self._afficherEtatJoueurs()
+        #self._afficherEtatJoueurs()
 
         # À partir de maintenant on commence les tours réguliers
         joueurCourant = 0
@@ -90,15 +90,15 @@ class Controleur(object):
             numeroTour += 1
             valeur = self._lancerDes()
 
-            print 'Tour', numeroTour
-            print 'Valeur des dés',valeur
+            #print 'Tour', numeroTour
+            #print 'Valeur des dés',valeur
 
             # Si la valeur des dés est 7, chaque joueur possédant plus de 7 cartes doit en discarter la 
             # moitié et le joueur courant doit déplacer les voleurs
             if (valeur == 7):
                 for joueur in self._joueurs:
                     if joueur.nombreRessources() > 7:
-                        print joueur.nom(),"se fait voler"
+                        #print joueur.nom(),"se fait voler"
                         quantiteVolee = joueur.nombreRessources() // 2
                         joueur.volerRessources(quantiteVolee)
 
@@ -109,7 +109,7 @@ class Controleur(object):
 
                 if 1 <= positionVoleurs and positionVoleurs <= 19 and joueurVole in range(self._nombreJoueurs):
                     self._mappe._deplacerVoleurs(positionVoleurs)
-                    print self._joueurs[joueurCourant].nom(), 'vole', self._joueurs[joueurVole].nom()
+                    #print self._joueurs[joueurCourant].nom(), 'vole', self._joueurs[joueurVole].nom()
                     ressourceVolee = self._joueurs[joueurVole].pigerRessourceAleatoirement()
                     if ressourceVolee == None:
                         print "ERREUR : Ce joueur ne possède aucune ressource"
@@ -125,11 +125,11 @@ class Controleur(object):
             # On rend jouables les cartes chevalier recues dans le tour précédent
             self._joueurs[joueurCourant].activerChevaliers()
 
-            print 'Etat des joueurs après distribution des ressources:'
+            #print 'Etat des joueurs après distribution des ressources:'
             for i in range(self._nombreJoueurs):
                 self._joueurs[i].afficher()
-            print 
-            print self._joueurs[joueurCourant].nom(), '[', joueurCourant, '] joue'
+            #print 
+            #print self._joueurs[joueurCourant].nom(), '[', joueurCourant, '] joue'
 
             # On exécute toutes les actions choisies par le joueur courant
             nombreActions = 0
@@ -147,9 +147,9 @@ class Controleur(object):
                 nombreActions += 1
 
             # On passe au joueur suivant
-            print "État à la fin du tour"
-            self._mappe.afficher()
-            self._afficherEtatJoueurs()
+            #print "État à la fin du tour"
+            #self._mappe.afficher()
+            #self._afficherEtatJoueurs()
             joueurCourant = (joueurCourant+1) % self._nombreJoueurs
 
 
@@ -175,19 +175,20 @@ class Controleur(object):
             if self._joueurs[j].nombrePointsVictoire() >= 10:
                 print self._joueurs[j].nom(),"a gagné la partie"
                 for k in range(self._nombreJoueurs):
-                    self._joueurs[k].finDePartie(self._mappe,self._joueurs[j].nom())
+                    self._joueurs[k].finDePartie(self._mappe,self._joueurs[j].id())
                 return True
         return False
 
 
     def _executer(self,(action,donnees),joueurCourant):
         if action == Action.ACHETER_CARTE:
-            print "ACHETER CARTE"
+            #print "ACHETER CARTE"
             if (self._joueurs[joueurCourant].quantiteRessources(Ressource.LAINE) >= 1 and
                 self._joueurs[joueurCourant].quantiteRessources(Ressource.MINERAL) >= 1 and
                 self._joueurs[joueurCourant].quantiteRessources(Ressource.BLE) >= 1):
                 if self._paquetCartes.vide():
-                    print "ERREUR: Paquet de cartes vide"
+                    i=0
+                    #print "ERREUR: Paquet de cartes vide"
                 else:
                     self._joueurs[joueurCourant].retirerRessources(Ressource.LAINE,1)
                     self._joueurs[joueurCourant].retirerRessources(Ressource.MINERAL,1)
@@ -197,7 +198,7 @@ class Controleur(object):
                 print "ERREUR: Pas assez de ressources pour acheter une carte"
 
         elif action == Action.AJOUTER_COLONIE:
-            print "AJOUTER COLONIE"
+            #print "AJOUTER COLONIE"
             if (self._joueurs[joueurCourant].quantiteRessources(Ressource.BOIS) >= 1 and
                 self._joueurs[joueurCourant].quantiteRessources(Ressource.ARGILE) >= 1 and
                 self._joueurs[joueurCourant].quantiteRessources(Ressource.BLE) >= 1 and
@@ -217,7 +218,7 @@ class Controleur(object):
 
 
         elif action == Action.AJOUTER_VILLE:
-            print "AJOUTER VILLE"
+            #print "AJOUTER VILLE"
             if (self._joueurs[joueurCourant].quantiteRessources(Ressource.BLE) >= 2 and
                 self._joueurs[joueurCourant].quantiteRessources(Ressource.MINERAL) >= 3):
                    try:
@@ -232,7 +233,7 @@ class Controleur(object):
 
 
         elif action == Action.AJOUTER_ROUTE:  
-            print "AJOUTER ROUTE"                        
+            #print "AJOUTER ROUTE"                        
             if (self._joueurs[joueurCourant].quantiteRessources(Ressource.BOIS) >= 1 and
                 self._joueurs[joueurCourant].quantiteRessources(Ressource.ARGILE) >= 1):
                    try:
@@ -247,7 +248,7 @@ class Controleur(object):
 
  
         elif action == Action.JOUER_CARTE_CHEVALIER:
-            print "JOUER CARTE CHEVALIER"
+            #print "JOUER CARTE CHEVALIER"
             try:
                 self._joueurs[joueurCourant].jouerCarteChevalier()
                 self._attribuerPointsArmeePlusPuissante(joueurCourant)
@@ -260,7 +261,7 @@ class Controleur(object):
                 print 'ERREUR:', e
 
         elif action == Action.ECHANGER_RESSOURCES:
-            print "ECHANGER"
+            #print "ECHANGER"
             self._echanger(joueurCourant,donnees[0],donnees[1],donnees[2])
 
         else:
@@ -305,7 +306,7 @@ class Controleur(object):
             self._joueurs[joueurCourant].retirerRessources(offre,2)    
             self._joueurs[joueurCourant].ajouterRessources(demande,1) 
         else:
-            print "ERREUR : Échange impossible, offre insufisante" 
+            print "ERREUR : Échange impossible, offre insufisante"
 
 
 
@@ -327,6 +328,6 @@ class Controleur(object):
 for i in range(0,5000):
     c = Controleur(['AI','Dumb','Dumb','Dumb'])
     c.jouer()
-    print "partie "+str(i)
+    #print "partie "+str(i)
 
 

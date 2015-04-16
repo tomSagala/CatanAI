@@ -269,24 +269,26 @@ class Joueur(object):
 
 
     def afficherRessources(self):
-        print "BLÉ:", self._ressources[Ressource.BLE] 
-        print "ARGILE:", self._ressources[Ressource.ARGILE] 
-        print "BOIS:", self._ressources[Ressource.BOIS] 
-        print "MINERAL:", self._ressources[Ressource.MINERAL] 
-        print "LAINE:", self._ressources[Ressource.LAINE] 
+        k=0
+        #print "BLÉ:", self._ressources[Ressource.BLE] 
+        #print "ARGILE:", self._ressources[Ressource.ARGILE] 
+        #print "BOIS:", self._ressources[Ressource.BOIS] 
+        #print "MINERAL:", self._ressources[Ressource.MINERAL] 
+        #print "LAINE:", self._ressources[Ressource.LAINE] 
 
 
     def afficher(self):
-        print self.nom(), '[', self._id, ']'
-        print 'Cartes ressources:', 
-        print 'BLE', self._ressources[Ressource.BLE],
-        print 'ARGILE', self._ressources[Ressource.ARGILE],
-        print 'BOIS', self._ressources[Ressource.BOIS],
-        print 'MINERAL', self._ressources[Ressource.MINERAL],
-        print 'LAINE', self._ressources[Ressource.LAINE]
-        print 'Points de victoire:', self._pointsVictoire
-        print 'Chevaliers: (',self._cartesChevalierRecues,self._cartesChevalierActivees,self._cartesChevalierJouees,')'
-        print '--------------------------------'
+        k=0
+        #print self.nom(), '[', self._id, ']'
+        #print 'Cartes ressources:', 
+        #print 'BLE', self._ressources[Ressource.BLE],
+        #print 'ARGILE', self._ressources[Ressource.ARGILE],
+        #print 'BOIS', self._ressources[Ressource.BOIS],
+        #print 'MINERAL', self._ressources[Ressource.MINERAL],
+        #print 'LAINE', self._ressources[Ressource.LAINE]
+        #print 'Points de victoire:', self._pointsVictoire
+        #print 'Chevaliers: (',self._cartesChevalierRecues,self._cartesChevalierActivees,self._cartesChevalierJouees,')'
+        #print '--------------------------------'
 
 
 

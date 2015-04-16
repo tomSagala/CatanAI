@@ -157,7 +157,6 @@ class JoueurAI(Joueur):
 
 
         self.actionsPrecedentes.append(Action.TERMINER)
-        print 'TERMINER'
         return Action.TERMINER
 
     def actionAjouterVille(self, actionsPossibles):
@@ -213,7 +212,7 @@ class JoueurAI(Joueur):
         import csv
         with open('catan.csv', 'ab') as f:
             csvWriter = csv.writer(f, delimiter=' ', skipinitialspace=True)
-            if self.id() is joueurID:
+            if self._id == joueurID:
                 csvWriter.writerow([1])
             else:
                 csvWriter.writerow([0])
@@ -242,7 +241,6 @@ class JoueurAI(Joueur):
             rewardPartie=-2
 
         #debut de partie  2pts si on est en tete sinon 2 - difference avec la tete (min -2)
-        print self.actionsPrecedentes[0]
         rewardDebut = max(2 + self.actionsPrecedentes[0][len(self.actionsPrecedentes[0])-1][2] - self.actionsPrecedentes[0][len(self.actionsPrecedentes[0])-1][1],-2)
 
         for i in range(0,len(self.actionsPrecedentes[0])):
@@ -291,9 +289,6 @@ class JoueurAI(Joueur):
                             if t._valeur == 6 or t._valeur == 8: #si la meilleure actuelle a un 6 ou un 8 (a eviter pour eloigner le brigand)
                                 meilleureValeurProduction = valeurProduction
                                 meilleureIntersection = i
-
-        print "COLONIE"
-        print meilleureIntersection._id
                                               
         return meilleureIntersection
 
