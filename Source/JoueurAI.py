@@ -122,7 +122,7 @@ class JoueurAI(Joueur):
 
             favoriteAction = valeurs[0][1]
 
-            randomChance = 100.0/(float(valeurs[0][0])+100.0)
+            randomChance = 1.0/(float(valeurs[0][0])+1.0)
 
             if random.uniform(0.0, 1.0) < randomChance:
                 rand = randint(0,len(valeurs)-1)
@@ -234,27 +234,29 @@ class JoueurAI(Joueur):
         #bonus pour le resultat final
         rewardPartie=0
         if self._pointsVictoire >= 10:
-            rewardPartie=5
-        elif self._pointsVictoire > 7:
-            rewardPartie=2
-        elif self._pointsVictoire < 5:
-            rewardPartie=-2
+            rewardPartie=1
 
         #debut de partie  2pts si on est en tete sinon 2 - difference avec la tete (min -2)
         if len(self.actionsPrecedentes[0]) > 0:
-            rewardDebut = max(2 + self.actionsPrecedentes[0][len(self.actionsPrecedentes[0])-1][2] - self.actionsPrecedentes[0][len(self.actionsPrecedentes[0])-1][1],-2)
+            rewardDebut = 0
+            if self.actionsPrecedentes[0][len(self.actionsPrecedentes[0])-1][2] >= self.actionsPrecedentes[0][len(self.actionsPrecedentes[0])-1][1]:
+                rewardDebut = 1
 
             for i in range(0,len(self.actionsPrecedentes[0])):
                 dictDebut[self.actionsPrecedentes[0][i][0]]= max(0, dictDebut[self.actionsPrecedentes[0][i][0]] + rewardDebut + rewardPartie)
 
         if len(self.actionsPrecedentes[1]) > 0:
-            rewardMid = max(2 + self.actionsPrecedentes[1][len(self.actionsPrecedentes[1])-1][2] -  self.actionsPrecedentes[1][len(self.actionsPrecedentes[1])-1][1],-2)
+            rewardMid = 0
+            if self.actionsPrecedentes[1][len(self.actionsPrecedentes[1])-1][2] >= self.actionsPrecedentes[1][len(self.actionsPrecedentes[1])-1][1]:
+                rewardMid = 1
 
             for i in range(0,len(self.actionsPrecedentes[1])):
                 dictMilieu[self.actionsPrecedentes[1][i][0]] = max(0, dictMilieu[self.actionsPrecedentes[1][i][0]] + rewardMid + rewardPartie)
 
         if len(self.actionsPrecedentes[2]) > 0:
-            rewardEnd = max(2 + self._pointsVictoire - 10,-2)
+            rewardEnd = 0
+            if self.actionsPrecedentes[2][len(self.actionsPrecedentes[2])-1][2] >= self.actionsPrecedentes[2][len(self.actionsPrecedentes[2])-1][1]:
+                rewardEnd = 1
 
             for i in range(0,len(self.actionsPrecedentes[2])):
                 dictFin[self.actionsPrecedentes[2][i][0]] = max(0, dictFin[self.actionsPrecedentes[2][i][0]] + rewardEnd + rewardPartie)
