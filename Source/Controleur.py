@@ -328,6 +328,6 @@ class Controleur(object):
 for i in range(0,5000):
     c = Controleur(['AI','Dumb','Dumb','Dumb'])
     c.jouer()
-    #print "partie "+str(i)
+    print "partie "+str(i)
 
 
