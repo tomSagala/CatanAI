@@ -324,8 +324,9 @@ class Controleur(object):
             return d1+d2
 
 
-c = Controleur(['AI','Dumb','Dumb','Dumb'])
-for i in range(0,3000):
+for i in range(0,5000):
+    c = Controleur(['AI','Dumb','Dumb','Dumb'])
     c.jouer()
+    print "partie "+str(i)
 
 

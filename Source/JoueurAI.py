@@ -246,15 +246,16 @@ class JoueurAI(Joueur):
 
         for i in range(0,len(self.actionsPrecedentes[0])):
                 dictDebut[self.actionsPrecedentes[0][i][0]]= max(0, dictDebut[self.actionsPrecedentes[0][i][0]] + rewardDebut + rewardPartie)
+        if len(self.actionsPrecedentes[1]) > 0:
+            rewardMid = max(2 + self.actionsPrecedentes[1][len(self.actionsPrecedentes[1])-1][2] -  self.actionsPrecedentes[1][len(self.actionsPrecedentes[1])-1][1],-2)
 
-        rewardMid = max(2 + self.actionsPrecedentes[1][len(self.actionsPrecedentes[1])-1][2] -  self.actionsPrecedentes[1][len(self.actionsPrecedentes[1])-1][1],-2)
-
-        for i in range(0,len(self.actionsPrecedentes[1])):
+            for i in range(0,len(self.actionsPrecedentes[1])):
                 dictMilieu[self.actionsPrecedentes[1][i][0]] = max(0, dictMilieu[self.actionsPrecedentes[1][i][0]] + rewardMid + rewardPartie)
 
-        rewardEnd = max(2 + self._pointsVictoire - 10,-2)
+        if len(self.actionsPrecedentes[2]) > 0:
+            rewardEnd = max(2 + self._pointsVictoire - 10,-2)
 
-        for i in range(0,len(self.actionsPrecedentes[2])):
+            for i in range(0,len(self.actionsPrecedentes[2])):
                 dictFin[self.actionsPrecedentes[2][i][0]] = max(0, dictFin[self.actionsPrecedentes[2][i][0]] + rewardEnd + rewardPartie)
 
         gameDict = {}

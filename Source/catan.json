@@ -1,1 +1,26 @@
-{"debutPartie": {"actionAcheterCarte": 100, "actionRoute": 99, "actionColonie": 98, "actionVille": 100, "actionJouerCarteChevalier": 58, "actionEchanger": 74}, "miPartie": {"actionAcheterCarte": 100, "actionRoute": 97, "actionColonie": 100, "actionVille": 100, "actionJouerCarteChevalier": 66, "actionEchanger": 88}, "finPartie": {"actionAcheterCarte": 100, "actionRoute": 92, "actionColonie": 100, "actionVille": 100, "actionJouerCarteChevalier": 56, "actionEchanger": 72}}
+{
+    "debutPartie": {
+        "actionEchanger": 100,
+        "actionVille": 100,
+        "actionColonie": 100,
+        "actionRoute": 100,
+        "actionAcheterCarte": 100,
+        "actionJouerCarteChevalier": 100
+    },
+    "miPartie": {
+        "actionEchanger": 100,
+        "actionVille": 100,
+        "actionColonie": 100,
+        "actionRoute": 100,
+        "actionAcheterCarte": 100,
+        "actionJouerCarteChevalier": 100
+    },
+    "finPartie": {
+        "actionEchanger": 100,
+        "actionVille": 100,
+        "actionColonie": 100,
+        "actionRoute": 100,
+        "actionAcheterCarte": 100,
+        "actionJouerCarteChevalier": 100
+    }
+}
