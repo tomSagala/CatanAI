@@ -122,7 +122,7 @@ class JoueurAI(Joueur):
 
             favoriteAction = valeurs[0][1]
 
-            randomChance = 1.0/(float(valeurs[0][0])+1.0)
+            randomChance = 1.0/(float(valeurs[0][0])+10.0)
 
             if random.uniform(0.0, 1.0) < randomChance:
                 rand = randint(0,len(valeurs)-1)
@@ -139,24 +139,22 @@ class JoueurAI(Joueur):
             elif favoriteAction is "actionColonie":
                 action = self.actionAjouterColonie(actionsPossibles)
 
-            elif favoriteAction is "actionEchanger":
+            elif favoriteAction is "actionRoute":
                 action = self.actionAjouterRoute(actionsPossibles)
 
-            elif favoriteAction is "actionRoute":
+            elif favoriteAction is "actionAcheterCarte":
                 action = self.actionAcheterCarte(actionsPossibles)
 
-            elif favoriteAction is "actionAcheterCarte":
+            elif favoriteAction is "actionJouerCarteChevalier":
                 action = self.actionJouerChevalier(actionsPossibles)
 
-            elif favoriteAction is "actionJouerCarteChevalier":
+            elif favoriteAction is "actionEchanger":
                 action = self.actionEchangerRessources(actionsPossibles)
 
         if action is not None:
             self.actionsPrecedentes[self.gamePhase].append((favoriteAction, leaderPoints, self._pointsVictoire))
             return action
 
-
-        self.actionsPrecedentes.append(Action.TERMINER)
         return Action.TERMINER
 
     def actionAjouterVille(self, actionsPossibles):
@@ -213,6 +211,7 @@ class JoueurAI(Joueur):
         with open('catan.csv', 'ab') as f:
             csvWriter = csv.writer(f, delimiter=' ', skipinitialspace=True)
             if self._id == joueurID:
+                print "I Win"
                 csvWriter.writerow([1])
             else:
                 csvWriter.writerow([0])
@@ -237,29 +236,26 @@ class JoueurAI(Joueur):
             rewardPartie=1
 
         #debut de partie  2pts si on est en tete sinon 2 - difference avec la tete (min -2)
-        if len(self.actionsPrecedentes[0]) > 0:
+        if len(self.actionsPrecedentes[1]) > 0:
             rewardDebut = 0
-            if self.actionsPrecedentes[0][len(self.actionsPrecedentes[0])-1][2] >= self.actionsPrecedentes[0][len(self.actionsPrecedentes[0])-1][1]:
+            if self.actionsPrecedentes[1][0][2] >= 5:
                 rewardDebut = 1
 
-            for i in range(0,len(self.actionsPrecedentes[0])):
-                dictDebut[self.actionsPrecedentes[0][i][0]]= max(0, dictDebut[self.actionsPrecedentes[0][i][0]] + rewardDebut + rewardPartie)
+            dictDebut[self.mostCommunMove(self.actionsPrecedentes[0])] += rewardDebut + rewardPartie
 
-        if len(self.actionsPrecedentes[1]) > 0:
+        if len(self.actionsPrecedentes[2]) > 0:
             rewardMid = 0
-            if self.actionsPrecedentes[1][len(self.actionsPrecedentes[1])-1][2] >= self.actionsPrecedentes[1][len(self.actionsPrecedentes[1])-1][1]:
+            if self.actionsPrecedentes[2][0][2] >= 7:
                 rewardMid = 1
 
-            for i in range(0,len(self.actionsPrecedentes[1])):
-                dictMilieu[self.actionsPrecedentes[1][i][0]] = max(0, dictMilieu[self.actionsPrecedentes[1][i][0]] + rewardMid + rewardPartie)
+            dictMilieu[self.mostCommunMove(self.actionsPrecedentes[1])] += rewardMid + rewardPartie
 
         if len(self.actionsPrecedentes[2]) > 0:
             rewardEnd = 0
-            if self.actionsPrecedentes[2][len(self.actionsPrecedentes[2])-1][2] >= self.actionsPrecedentes[2][len(self.actionsPrecedentes[2])-1][1]:
+            if self._pointsVictoire >= 10:
                 rewardEnd = 1
 
-            for i in range(0,len(self.actionsPrecedentes[2])):
-                dictFin[self.actionsPrecedentes[2][i][0]] = max(0, dictFin[self.actionsPrecedentes[2][i][0]] + rewardEnd + rewardPartie)
+            dictFin[self.mostCommunMove(self.actionsPrecedentes[2])] += rewardEnd + rewardPartie
 
         gameDict = {}
         gameDict["debutPartie"] = dictDebut
@@ -267,6 +263,43 @@ class JoueurAI(Joueur):
         gameDict["finPartie"] = dictFin
 
         return gameDict
+
+    def mostCommunMove(self, list):
+        compteurVille =0
+        compteurColonie =0
+        compteurEchange =0
+        compteurRoute =0
+        compteurAcheterCarte =0
+        compteurChevalier =0
+
+        for i in range (0, len(list)) :
+            if list[i][0] is "actionVille":
+                compteurVille +=1
+            elif list[i][0] is "actionColonie":
+                compteurColonie +=1
+            elif list[i][0] is "actionEchanger":
+                compteurEchange +=1
+            elif list[i][0] is "actionRoute":
+                compteurRoute +=1
+            elif list[i][0] is "actionAcheterCarte":
+                compteurAcheterCarte +=1
+            elif list[i][0] is "actionJouerCarteChevalier":
+                compteurChevalier +=1
+
+        maximum = max(compteurVille, compteurColonie, compteurEchange, compteurRoute, compteurAcheterCarte, compteurChevalier)
+
+        if maximum == compteurVille:
+            return "actionVille"
+        elif maximum == compteurColonie:
+            return "actionColonie"
+        elif maximum == compteurEchange:
+            return "actionEchanger"
+        elif maximum == compteurRoute:
+            return "actionRoute"
+        elif maximum == compteurAcheterCarte:
+            return "actionAcheterCarte"
+        else:
+            return "actionJouerCarteChevalier"
 
     def trouverMeilleureIntersectionColonie(self,mappe):
 
@@ -294,8 +327,6 @@ class JoueurAI(Joueur):
                                 meilleureIntersection = i
                                               
         return meilleureIntersection
-
-            
 
     def trouverMeilleureIntersectionRoute(self,intersection,mappe):
 
