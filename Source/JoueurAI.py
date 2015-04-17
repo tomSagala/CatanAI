@@ -30,33 +30,51 @@ class JoueurAI(Joueur):
 
         import json
         with open('catan.json', 'r') as fichierCatan:
-            donneeCatan = json.load(fichierCatan)
+            self.dictCatan = json.load(fichierCatan)
 
-        debutValActionEchanger = donneeCatan["debutPartie"]["actionEchanger"]
-        debutValActionVille = donneeCatan["debutPartie"]["actionVille"]
-        debutValActionColonie = donneeCatan["debutPartie"]["actionColonie"]
-        debutValActionRoute = donneeCatan["debutPartie"]["actionRoute"]
-        debutValActionAcheterCarte = donneeCatan["debutPartie"]["actionAcheterCarte"]
-        debutValActionJouerCarteChevalier = donneeCatan["debutPartie"]["actionJouerCarteChevalier"]
+        debutValActionEchanger = self.dictCatan["debutPartie"]["actionEchanger"]
+        debutValActionVille = self.dictCatan["debutPartie"]["actionVille"]
+        debutValActionColonie = self.dictCatan["debutPartie"]["actionColonie"]
+        debutValActionRoute = self.dictCatan["debutPartie"]["actionRoute"]
+        debutValActionAcheterCarte = self.dictCatan["debutPartie"]["actionAcheterCarte"]
+        debutValActionJouerCarteChevalier = self.dictCatan["debutPartie"]["actionJouerCarteChevalier"]
 
-        miValActionEchanger = donneeCatan["miPartie"]["actionEchanger"]
-        miValActionVille = donneeCatan["miPartie"]["actionVille"]
-        miValActionColonie = donneeCatan["miPartie"]["actionColonie"]
-        miValActionRoute = donneeCatan["miPartie"]["actionRoute"]
-        miValActionAcheterCarte = donneeCatan["miPartie"]["actionAcheterCarte"]
-        miValActionJouerCarteChevalier = donneeCatan["miPartie"]["actionJouerCarteChevalier"]
+        miValActionEchanger = self.dictCatan["miPartie"]["actionEchanger"]
+        miValActionVille = self.dictCatan["miPartie"]["actionVille"]
+        miValActionColonie = self.dictCatan["miPartie"]["actionColonie"]
+        miValActionRoute = self.dictCatan["miPartie"]["actionRoute"]
+        miValActionAcheterCarte = self.dictCatan["miPartie"]["actionAcheterCarte"]
+        miValActionJouerCarteChevalier = self.dictCatan["miPartie"]["actionJouerCarteChevalier"]
 
-        finValActionEchanger = donneeCatan["finPartie"]["actionEchanger"]
-        finValActionVille = donneeCatan["finPartie"]["actionVille"]
-        finValActionColonie = donneeCatan["finPartie"]["actionColonie"]
-        finValActionRoute = donneeCatan["finPartie"]["actionRoute"]
-        finValActionAcheterCarte = donneeCatan["finPartie"]["actionAcheterCarte"]
-        finValActionJouerCarteChevalier = donneeCatan["finPartie"]["actionJouerCarteChevalier"]
+        finValActionEchanger = self.dictCatan["finPartie"]["actionEchanger"]
+        finValActionVille = self.dictCatan["finPartie"]["actionVille"]
+        finValActionColonie = self.dictCatan["finPartie"]["actionColonie"]
+        finValActionRoute = self.dictCatan["finPartie"]["actionRoute"]
+        finValActionAcheterCarte = self.dictCatan["finPartie"]["actionAcheterCarte"]
+        finValActionJouerCarteChevalier = self.dictCatan["finPartie"]["actionJouerCarteChevalier"]
 
         #tableau des valeurs des actions
-        valeursDebut = sorted([(debutValActionEchanger, "actionEchanger"), (debutValActionVille, "actionVille"), (debutValActionColonie, "actionColonie"), (debutValActionRoute, "actionRoute"), (debutValActionAcheterCarte, "actionAcheterCarte"), (debutValActionJouerCarteChevalier, "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
-        valeursMi = sorted([(miValActionEchanger, "actionEchanger"), (miValActionVille, "actionVille"), (miValActionColonie, "actionColonie"), (miValActionRoute, "actionRoute"), (miValActionAcheterCarte, "actionAcheterCarte"), (miValActionJouerCarteChevalier, "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
-        valeursFin = sorted([(finValActionEchanger, "actionEchanger"), (finValActionVille, "actionVille"), (finValActionColonie, "actionColonie"), (finValActionRoute, "actionRoute"), (finValActionAcheterCarte, "actionAcheterCarte"), (finValActionJouerCarteChevalier, "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursDebut = {}
+        valeursDebut["2"] = sorted([(debutValActionEchanger["2"], "actionEchanger"), (debutValActionVille["2"], "actionVille"), (debutValActionColonie["2"], "actionColonie"), (debutValActionRoute["2"], "actionRoute"), (debutValActionAcheterCarte["2"], "actionAcheterCarte"), (debutValActionJouerCarteChevalier["2"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursDebut["3"] = sorted([(debutValActionEchanger["3"], "actionEchanger"), (debutValActionVille["3"], "actionVille"), (debutValActionColonie["3"], "actionColonie"), (debutValActionRoute["3"], "actionRoute"), (debutValActionAcheterCarte["3"], "actionAcheterCarte"), (debutValActionJouerCarteChevalier["3"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursDebut["4"] = sorted([(debutValActionEchanger["4"], "actionEchanger"), (debutValActionVille["4"], "actionVille"), (debutValActionColonie["4"], "actionColonie"), (debutValActionRoute["4"], "actionRoute"), (debutValActionAcheterCarte["4"], "actionAcheterCarte"), (debutValActionJouerCarteChevalier["4"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+
+        valeursMi = {}
+        valeursMi["2"] = sorted([(miValActionEchanger["2"], "actionEchanger"), (miValActionVille["2"], "actionVille"), (miValActionColonie["2"], "actionColonie"), (miValActionRoute["2"], "actionRoute"), (miValActionAcheterCarte["2"], "actionAcheterCarte"), (miValActionJouerCarteChevalier["2"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursMi["3"] = sorted([(miValActionEchanger["3"], "actionEchanger"), (miValActionVille["3"], "actionVille"), (miValActionColonie["3"], "actionColonie"), (miValActionRoute["3"], "actionRoute"), (miValActionAcheterCarte["3"], "actionAcheterCarte"), (miValActionJouerCarteChevalier["3"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursMi["4"] = sorted([(miValActionEchanger["4"], "actionEchanger"), (miValActionVille["4"], "actionVille"), (miValActionColonie["4"], "actionColonie"), (miValActionRoute["4"], "actionRoute"), (miValActionAcheterCarte["4"], "actionAcheterCarte"), (miValActionJouerCarteChevalier["4"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursMi["5"] = sorted([(miValActionEchanger["5"], "actionEchanger"), (miValActionVille["5"], "actionVille"), (miValActionColonie["5"], "actionColonie"), (miValActionRoute["5"], "actionRoute"), (miValActionAcheterCarte["5"], "actionAcheterCarte"), (miValActionJouerCarteChevalier["5"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursMi["6"] = sorted([(miValActionEchanger["6"], "actionEchanger"), (miValActionVille["6"], "actionVille"), (miValActionColonie["6"], "actionColonie"), (miValActionRoute["6"], "actionRoute"), (miValActionAcheterCarte["6"], "actionAcheterCarte"), (miValActionJouerCarteChevalier["6"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+
+        valeursFin = {}
+        valeursFin["2"] = sorted([(finValActionEchanger["2"], "actionEchanger"), (finValActionVille["2"], "actionVille"), (finValActionColonie["2"], "actionColonie"), (finValActionRoute["2"], "actionRoute"), (finValActionAcheterCarte["2"], "actionAcheterCarte"), (finValActionJouerCarteChevalier["2"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursFin["3"] = sorted([(finValActionEchanger["3"], "actionEchanger"), (finValActionVille["3"], "actionVille"), (finValActionColonie["3"], "actionColonie"), (finValActionRoute["3"], "actionRoute"), (finValActionAcheterCarte["3"], "actionAcheterCarte"), (finValActionJouerCarteChevalier["3"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursFin["4"] = sorted([(finValActionEchanger["4"], "actionEchanger"), (finValActionVille["4"], "actionVille"), (finValActionColonie["4"], "actionColonie"), (finValActionRoute["4"], "actionRoute"), (finValActionAcheterCarte["4"], "actionAcheterCarte"), (finValActionJouerCarteChevalier["4"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursFin["5"] = sorted([(finValActionEchanger["5"], "actionEchanger"), (finValActionVille["5"], "actionVille"), (finValActionColonie["5"], "actionColonie"), (finValActionRoute["5"], "actionRoute"), (finValActionAcheterCarte["5"], "actionAcheterCarte"), (finValActionJouerCarteChevalier["5"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursFin["6"] = sorted([(finValActionEchanger["6"], "actionEchanger"), (finValActionVille["6"], "actionVille"), (finValActionColonie["6"], "actionColonie"), (finValActionRoute["6"], "actionRoute"), (finValActionAcheterCarte["6"], "actionAcheterCarte"), (finValActionJouerCarteChevalier["6"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursFin["7"] = sorted([(finValActionEchanger["7"], "actionEchanger"), (finValActionVille["7"], "actionVille"), (finValActionColonie["7"], "actionColonie"), (finValActionRoute["7"], "actionRoute"), (finValActionAcheterCarte["7"], "actionAcheterCarte"), (finValActionJouerCarteChevalier["7"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursFin["8"] = sorted([(finValActionEchanger["8"], "actionEchanger"), (finValActionVille["8"], "actionVille"), (finValActionColonie["8"], "actionColonie"), (finValActionRoute["8"], "actionRoute"), (finValActionAcheterCarte["8"], "actionAcheterCarte"), (finValActionJouerCarteChevalier["8"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursFin["9"] = sorted([(finValActionEchanger["9"], "actionEchanger"), (finValActionVille["9"], "actionVille"), (finValActionColonie["9"], "actionColonie"), (finValActionRoute["9"], "actionRoute"), (finValActionAcheterCarte["9"], "actionAcheterCarte"), (finValActionJouerCarteChevalier["9"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
 
         self.valeursActions = [valeursDebut, valeursMi, valeursFin]
 
@@ -108,15 +126,15 @@ class JoueurAI(Joueur):
 
         leaderPoints = max(infoJoueurs,key=lambda x:x[0])[0]
 
-        if leaderPoints < 5 and self.gamePhase is not 0:
+        if leaderPoints < 5 and not self.gamePhase == 0:
             self.gamePhase = 0
-        elif leaderPoints > 7 and self.gamePhase is not 2:
+        elif leaderPoints >= 7 and not self.gamePhase == 2:
             self.gamePhase = 2
-        elif leaderPoints >= 5 and leaderPoints < 7 and self.gamePhase is not 1 :
+        elif leaderPoints >= 5 and leaderPoints < 7 and not self.gamePhase == 1 :
             self.gamePhase = 1
 
         action = None
-        valeurs = copy.deepcopy(self.valeursActions[self.gamePhase])
+        valeurs = copy.deepcopy(self.valeursActions[self.gamePhase][str(self._pointsVictoire)])
         favoriteAction = ""
         while len(valeurs) > 0 and action is None and len(actionsPossibles) > 0:
 
@@ -205,10 +223,10 @@ class JoueurAI(Joueur):
                         return a
 
     def finDePartie(self,mappe,joueurID):
+        self.calculFinDePartie()
         import json
         with open('catan.json', 'w') as fichierCatan:
-            dict = self.calculFinDePartie()
-            json.dump(dict, fichierCatan)
+            json.dump(self.dictCatan, fichierCatan)
 
         import csv
         with open('catan.csv', 'ab') as f:
@@ -220,51 +238,34 @@ class JoueurAI(Joueur):
                 csvWriter.writerow([0])
 
     def calculFinDePartie(self):
-        dictDebut = {}
-        dictMilieu = {}
-        dictFin = {}
-
-        for i in range (0,3):
-            for j in range(0,6):
-                if i==0:
-                    dictDebut[self.valeursActions[i][j][1]] = self.valeursActions[i][j][0]
-                elif i==1:
-                    dictMilieu[self.valeursActions[i][j][1]] = self.valeursActions[i][j][0]
-                elif i==2:
-                    dictFin[self.valeursActions[i][j][1]] = self.valeursActions[i][j][0]
-
         #bonus pour le resultat final
         rewardPartie=-1
         if self._pointsVictoire >= 10:
             rewardPartie=1
 
         if len(self.actionsPrecedentes[1]) > 0:
-            rewardDebut = -1
+            rewardDebut = -1.0
             if self.actionsPrecedentes[1][0][2] >= 5:
-                rewardDebut = 1
+                rewardDebut = 1.0
 
-            dictDebut[self.mostCommunMove(self.actionsPrecedentes[0])] += rewardDebut + rewardPartie
+            for i in range (0, len(self.actionsPrecedentes[0])):
+                self.dictCatan['debutPartie'][self.actionsPrecedentes[0][i][0]][str(self.actionsPrecedentes[0][i][2])] += rewardDebut + rewardPartie
 
         if len(self.actionsPrecedentes[2]) > 0:
-            rewardMid = -1
+            rewardMid = -1.0
             if self.actionsPrecedentes[2][0][2] >= 7:
-                rewardMid = 1
+                rewardMid = 1.0
 
-            dictMilieu[self.mostCommunMove(self.actionsPrecedentes[1])] += rewardMid + rewardPartie
+            for i in range (0, len(self.actionsPrecedentes[1])):
+                self.dictCatan['miPartie'][self.actionsPrecedentes[1][i][0]][str(self.actionsPrecedentes[1][i][2])] += rewardMid + rewardPartie
 
         if len(self.actionsPrecedentes[2]) > 0:
-            rewardEnd = -1
+            rewardEnd = -1.0
             if self._pointsVictoire >= 10:
-                rewardEnd = 1
+                rewardEnd = 1.0
 
-            dictFin[self.mostCommunMove(self.actionsPrecedentes[2])] += rewardEnd + rewardPartie
-
-        gameDict = {}
-        gameDict["debutPartie"] = dictDebut
-        gameDict["miPartie"] = dictMilieu
-        gameDict["finPartie"] = dictFin
-
-        return gameDict
+            for i in range (0, len(self.actionsPrecedentes[2])):
+                self.dictCatan['finPartie'][self.actionsPrecedentes[2][i][0]][str(self.actionsPrecedentes[2][i][2])] += rewardEnd + rewardPartie
 
     def mostCommunMove(self, list):
         compteurVille =0

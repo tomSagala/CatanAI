@@ -1,1 +1,26 @@
-{"debutPartie": {"actionAcheterCarte": 66, "actionRoute": 37, "actionColonie": 104, "actionVille": 99, "actionJouerCarteChevalier": 101, "actionEchanger": -84}, "miPartie": {"actionAcheterCarte": 92, "actionRoute": 69, "actionColonie": 106, "actionVille": 105, "actionJouerCarteChevalier": 101, "actionEchanger": -82}, "finPartie": {"actionAcheterCarte": 90, "actionRoute": 67, "actionColonie": 104, "actionVille": 99, "actionJouerCarteChevalier": 101, "actionEchanger": -100}}
+{
+    "debutPartie": {
+        "actionEchanger": {"2":100,"3":100,"4":100},
+        "actionVille": {"2":100,"3":100,"4":100},
+        "actionColonie": {"2":100,"3":100,"4":100},
+        "actionRoute": {"2":100,"3":100,"4":100},
+        "actionAcheterCarte": {"2":100,"3":100,"4":100},
+        "actionJouerCarteChevalier": {"2":100,"3":100,"4":100}
+    },
+    "miPartie": {
+        "actionEchanger": {"2":100,"3":100,"4":100,"5":100,"6":100},
+        "actionVille": {"2":100,"3":100,"4":100,"5":100,"6":100},
+        "actionColonie": {"2":100,"3":100,"4":100,"5":100,"6":100},
+        "actionRoute": {"2":100,"3":100,"4":100,"5":100,"6":100},
+        "actionAcheterCarte": {"2":100,"3":100,"4":100,"5":100,"6":100},
+        "actionJouerCarteChevalier": {"2":100,"3":100,"4":100,"5":100,"6":100}
+    },
+    "finPartie": {
+         "actionEchanger": {"2":100,"3":100,"4":100,"5":100,"6":100,"7":100,"8":100,"9":100},
+        "actionVille": {"2":100,"3":100,"4":100,"5":100,"6":100,"7":100,"8":100,"9":100},
+        "actionColonie": {"2":100,"3":100,"4":100,"5":100,"6":100,"7":100,"8":100,"9":100},
+        "actionRoute": {"2":100,"3":100,"4":100,"5":100,"6":100,"7":100,"8":100,"9":100},
+        "actionAcheterCarte": {"2":100,"3":100,"4":100,"5":100,"6":100,"7":100,"8":100,"9":100},
+        "actionJouerCarteChevalier": {"2":100,"3":100,"4":100,"5":100,"6":100,"7":100,"8":100,"9":100}
+    }
+}
