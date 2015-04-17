@@ -122,10 +122,11 @@ class JoueurAI(Joueur):
 
             favoriteAction = valeurs[0][1]
 
-            if (float(valeurs[0][0])+100.0)> 0:
-               randomChance = 100.0/(float(valeurs[0][0])+100.0)
-            else:
-                randomChance = 1
+            randomChance = math.exp(-valeurs[0[0]]/100.0)
+            #if (float(valeurs[0][0])+100.0)> 0:
+             #  randomChance = 100.0/(float(valeurs[0][0])+100.0)
+            #else:
+             #   randomChance = 1
 
             if random.uniform(0.0, 1.0) < randomChance:
                 rand = randint(0,len(valeurs)-1)
