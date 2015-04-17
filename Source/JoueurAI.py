@@ -495,6 +495,22 @@ class JoueurAI(Joueur):
     
     def ressourceEnManque(self):
 
+
+        if self.quantiteRessources(Ressource.BLE) == 0:
+            return Ressource.BLE
+        if self.quantiteRessources(Ressource.ARGILE) == 0:
+            return Ressource.ARGILE
+        if self.quantiteRessources(Ressource.BOIS) == 0:
+            return Ressource.BOIS
+        if self.quantiteRessources(Ressource.LAINE) == 0:
+            return Ressource.LAINE
+        if self.quantiteRessources(Ressource.MINERAL) == 0:
+            return Ressource.MINERAL
+
+
+        return False
+
+
         valeurs = copy.deepcopy(self.valeursActions[self.gamePhase])
 
         while len(valeurs) > 0:
