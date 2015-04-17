@@ -122,7 +122,7 @@ class JoueurAI(Joueur):
 
             favoriteAction = valeurs[0][1]
 
-            randomChance = math.exp(-valeurs[0[0]]/100.0)
+            randomChance = math.exp(-valeurs[0][0]/100.0)
             #if (float(valeurs[0][0])+100.0)> 0:
              #  randomChance = 100.0/(float(valeurs[0][0])+100.0)
             #else:
