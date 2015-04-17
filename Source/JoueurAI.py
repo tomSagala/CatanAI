@@ -122,7 +122,10 @@ class JoueurAI(Joueur):
 
             favoriteAction = valeurs[0][1]
 
-            randomChance = 1.0/(float(valeurs[0][0])+10.0)
+            if (float(valeurs[0][0])+100.0)> 0:
+               randomChance = 100.0/(float(valeurs[0][0])+100.0)
+            else:
+                randomChance = 1
 
             if random.uniform(0.0, 1.0) < randomChance:
                 rand = randint(0,len(valeurs)-1)
@@ -142,7 +145,7 @@ class JoueurAI(Joueur):
             elif favoriteAction is "actionRoute":
                 action = self.actionAjouterRoute(actionsPossibles)
 
-            elif favoriteAction is "actionAcheterCarte":
+            elif favoriteAction is "actionAcheterCarte" and not paquetCartesVide:
                 action = self.actionAcheterCarte(actionsPossibles)
 
             elif favoriteAction is "actionJouerCarteChevalier":
@@ -231,27 +234,26 @@ class JoueurAI(Joueur):
                     dictFin[self.valeursActions[i][j][1]] = self.valeursActions[i][j][0]
 
         #bonus pour le resultat final
-        rewardPartie=0
+        rewardPartie=-1
         if self._pointsVictoire >= 10:
             rewardPartie=1
 
-        #debut de partie  2pts si on est en tete sinon 2 - difference avec la tete (min -2)
         if len(self.actionsPrecedentes[1]) > 0:
-            rewardDebut = 0
+            rewardDebut = -1
             if self.actionsPrecedentes[1][0][2] >= 5:
                 rewardDebut = 1
 
             dictDebut[self.mostCommunMove(self.actionsPrecedentes[0])] += rewardDebut + rewardPartie
 
         if len(self.actionsPrecedentes[2]) > 0:
-            rewardMid = 0
+            rewardMid = -1
             if self.actionsPrecedentes[2][0][2] >= 7:
                 rewardMid = 1
 
             dictMilieu[self.mostCommunMove(self.actionsPrecedentes[1])] += rewardMid + rewardPartie
 
         if len(self.actionsPrecedentes[2]) > 0:
-            rewardEnd = 0
+            rewardEnd = -1
             if self._pointsVictoire >= 10:
                 rewardEnd = 1
 

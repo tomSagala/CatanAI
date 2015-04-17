@@ -1,26 +1,26 @@
 {
     "debutPartie": {
-        "actionEchanger": 1,
-        "actionVille": 6,
-        "actionColonie": 5,
-        "actionRoute": 4,
-        "actionAcheterCarte": 3,
-        "actionJouerCarteChevalier": 2
+        "actionEchanger": 100,
+        "actionVille": 105,
+        "actionColonie": 104,
+        "actionRoute": 103,
+        "actionAcheterCarte": 102,
+        "actionJouerCarteChevalier": 101
     },
     "miPartie": {
-        "actionEchanger": 1,
-        "actionVille": 6,
-        "actionColonie": 5,
-        "actionRoute": 4,
-        "actionAcheterCarte": 3,
-        "actionJouerCarteChevalier": 2
+        "actionEchanger": 100,
+        "actionVille": 105,
+        "actionColonie": 104,
+        "actionRoute": 103,
+        "actionAcheterCarte": 102,
+        "actionJouerCarteChevalier": 101
     },
     "finPartie": {
-        "actionEchanger": 1,
-        "actionVille": 6,
-        "actionColonie": 5,
-        "actionRoute": 4,
-        "actionAcheterCarte": 3,
-        "actionJouerCarteChevalier": 2
+         "actionEchanger": 100,
+        "actionVille": 105,
+        "actionColonie": 104,
+        "actionRoute": 103,
+        "actionAcheterCarte": 102,
+        "actionJouerCarteChevalier": 101
     }
 }
