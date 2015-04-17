@@ -75,6 +75,7 @@ class JoueurAI(Joueur):
         valeursFin["7"] = sorted([(finValActionEchanger["7"], "actionEchanger"), (finValActionVille["7"], "actionVille"), (finValActionColonie["7"], "actionColonie"), (finValActionRoute["7"], "actionRoute"), (finValActionAcheterCarte["7"], "actionAcheterCarte"), (finValActionJouerCarteChevalier["7"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
         valeursFin["8"] = sorted([(finValActionEchanger["8"], "actionEchanger"), (finValActionVille["8"], "actionVille"), (finValActionColonie["8"], "actionColonie"), (finValActionRoute["8"], "actionRoute"), (finValActionAcheterCarte["8"], "actionAcheterCarte"), (finValActionJouerCarteChevalier["8"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
         valeursFin["9"] = sorted([(finValActionEchanger["9"], "actionEchanger"), (finValActionVille["9"], "actionVille"), (finValActionColonie["9"], "actionColonie"), (finValActionRoute["9"], "actionRoute"), (finValActionAcheterCarte["9"], "actionAcheterCarte"), (finValActionJouerCarteChevalier["9"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
+        valeursFin["10"] = sorted([(finValActionEchanger["10"], "actionEchanger"), (finValActionVille["10"], "actionVille"), (finValActionColonie["10"], "actionColonie"), (finValActionRoute["10"], "actionRoute"), (finValActionAcheterCarte["10"], "actionAcheterCarte"), (finValActionJouerCarteChevalier["10"], "actionJouerCarteChevalier")], key=lambda x:x[0], reverse=True)
 
         self.valeursActions = [valeursDebut, valeursMi, valeursFin]
 
@@ -126,15 +127,14 @@ class JoueurAI(Joueur):
 
         leaderPoints = max(infoJoueurs,key=lambda x:x[0])[0]
 
-        if (leaderPoints < 5 or self._pointsVictoire < 5) and not self.gamePhase == 0:
-            self.gamePhase = 0
-        elif (leaderPoints >= 7 or self._pointsVictoire >= 7)and not self.gamePhase == 2:
+        if (leaderPoints >= 7 or self._pointsVictoire >= 7):
             self.gamePhase = 2
-        elif ((leaderPoints >= 5 and leaderPoints < 7) or (self._pointsVictoire >= 5 and self._pointsVictoire < 7)) and not self.gamePhase == 1 :
+        elif ((leaderPoints >= 5 and leaderPoints < 7) or (self._pointsVictoire >= 5 and self._pointsVictoire < 7)):
             self.gamePhase = 1
-
+        else:
+            self.gamePhase = 0
         action = None
-        valeurs = copy.deepcopy(self.valeursActions[self.gamePhase][str(self._pointsVictoire)])
+        valeurs = copy.deepcopy(self.valeursActions[self.gamePhase][str(min(self._pointsVictoire,10))])
         favoriteAction = ""
         while len(valeurs) > 0 and action is None and len(actionsPossibles) > 0:
 
@@ -173,7 +173,7 @@ class JoueurAI(Joueur):
                 action = self.actionEchangerRessources(actionsPossibles)
 
         if action is not None:
-            self.actionsPrecedentes[self.gamePhase].append((favoriteAction, leaderPoints, self._pointsVictoire))
+            self.actionsPrecedentes[self.gamePhase].append((favoriteAction, leaderPoints, str(min(self._pointsVictoire,10))))
             return action
 
         return Action.TERMINER
