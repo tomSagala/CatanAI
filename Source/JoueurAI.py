@@ -126,11 +126,11 @@ class JoueurAI(Joueur):
 
         leaderPoints = max(infoJoueurs,key=lambda x:x[0])[0]
 
-        if leaderPoints < 5 and not self.gamePhase == 0:
+        if (leaderPoints < 5 or self._pointsVictoire < 5) and not self.gamePhase == 0:
             self.gamePhase = 0
-        elif leaderPoints >= 7 and not self.gamePhase == 2:
+        elif (leaderPoints >= 7 or self._pointsVictoire >= 7)and not self.gamePhase == 2:
             self.gamePhase = 2
-        elif leaderPoints >= 5 and leaderPoints < 7 and not self.gamePhase == 1 :
+        elif ((leaderPoints >= 5 and leaderPoints < 7) or (self._pointsVictoire >= 5 and self._pointsVictoire < 7)) and not self.gamePhase == 1 :
             self.gamePhase = 1
 
         action = None
