@@ -32,8 +32,8 @@ class JoueurAI(Joueur):
         self.priorite[Ressource.ARGILE] = 10.0
         self.priorite[Ressource.BLE] = 9.0
         self.priorite[Ressource.BOIS] = 10.0
-        self.priorite[Ressource.MINERAL] = 7.0
-        self.priorite[Ressource.LAINE] = 8.0
+        self.priorite[Ressource.MINERAL] = 5.0
+        self.priorite[Ressource.LAINE] = 7.0
         import json
         with open('catan.json', 'r') as fichierCatan:
             self.dictCatan = json.load(fichierCatan)
@@ -115,11 +115,13 @@ class JoueurAI(Joueur):
         
         if self.possibleAjouterVille(mappe):
             for v in self.possibleAjouterVille(mappe):
-                actionsPossibles.append((Action.AJOUTER_VILLE,[v._id]))
+                if v is int:
+                    actionsPossibles.append((Action.AJOUTER_VILLE,[v._id]))
 
         if self.possibleAjouterColonie(mappe):
             for c in self.possibleAjouterColonie(mappe):
-                actionsPossibles.append((Action.AJOUTER_COLONIE,[c._id]))
+                if c is int:
+                    actionsPossibles.append((Action.AJOUTER_COLONIE,[c._id]))
 
         if self.possibleAjouterRoute(mappe):
             for r in self.possibleAjouterRoute(mappe):
@@ -133,15 +135,25 @@ class JoueurAI(Joueur):
 
         leaderPoints = max(infoJoueurs,key=lambda x:x[0])[0]
 
-        if (leaderPoints >= 7 or self._pointsVictoire >= 7):
+        if (leaderPoints >= 7 or self._pointsVictoire >= 7) and self.gamePhase != 2:
             self.gamePhase = 2
-        elif ((leaderPoints >= 5 and leaderPoints < 7) or (self._pointsVictoire >= 5 and self._pointsVictoire < 7)):
+            self.priorite[Ressource.MINERAL] +=2.0
+            self.priorite[Ressource.BOIS] -=1.0
+            self.priorite[Ressource.ARGILE] -=1.0
+
+        elif ((leaderPoints >= 5 and leaderPoints < 7) or (self._pointsVictoire >= 5 and self._pointsVictoire < 7)) and self.gamePhase == 0:
             self.gamePhase = 1
-        else:
+            self.priorite[Ressource.BOIS] -=1.0
+            self.priorite[Ressource.ARGILE] -=1.0
+            self.priorite[Ressource.MINERAL] +=3.0
+
+        elif leaderPoints < 5 and self._pointsVictoire < 5 and self.gamePhase != 0:
             self.gamePhase = 0
+
         action = None
         valeurs = copy.deepcopy(self.valeursActions[self.gamePhase][str(min(self._pointsVictoire,10))])
         favoriteAction = ""
+
         while len(valeurs) > 0 and action is None and len(actionsPossibles) > 0:
 
             favoriteAction = valeurs[0][1]
@@ -274,43 +286,6 @@ class JoueurAI(Joueur):
             for i in range (0, len(self.actionsPrecedentes[2])):
                 self.dictCatan['finPartie'][self.actionsPrecedentes[2][i][0]][str(self.actionsPrecedentes[2][i][2])] += rewardEnd
 
-    def mostCommunMove(self, list):
-        compteurVille =0
-        compteurColonie =0
-        compteurEchange =0
-        compteurRoute =0
-        compteurAcheterCarte =0
-        compteurChevalier =0
-
-        for i in range (0, len(list)) :
-            if list[i][0] is "actionVille":
-                compteurVille +=1
-            elif list[i][0] is "actionColonie":
-                compteurColonie +=1
-            elif list[i][0] is "actionEchanger":
-                compteurEchange +=1
-            elif list[i][0] is "actionRoute":
-                compteurRoute +=1
-            elif list[i][0] is "actionAcheterCarte":
-                compteurAcheterCarte +=1
-            elif list[i][0] is "actionJouerCarteChevalier":
-                compteurChevalier +=1
-
-        maximum = max(compteurVille, compteurColonie, compteurEchange, compteurRoute, compteurAcheterCarte, compteurChevalier)
-
-        if maximum == compteurVille:
-            return "actionVille"
-        elif maximum == compteurColonie:
-            return "actionColonie"
-        elif maximum == compteurEchange:
-            return "actionEchanger"
-        elif maximum == compteurRoute:
-            return "actionRoute"
-        elif maximum == compteurAcheterCarte:
-            return "actionAcheterCarte"
-        else:
-            return "actionJouerCarteChevalier"
-
     def trouverMeilleureIntersectionColonie(self,mappe):
 
         meilleureValeurProduction = 0
@@ -324,7 +299,8 @@ class JoueurAI(Joueur):
                     valeurProduction = 0
                                         
                     for t in i.obtenirTerritoiresVoisins(): #pour tous les territoires de l'intersection
-                        valeurProduction += self.obtenirValeurProductionChiffre(t._valeur) #on accumule les valeurs de production
+                        if t._valeur != 0:
+                            valeurProduction += self.priorite[t.ressource()]*self.obtenirValeurProductionChiffre(t._valeur) #on accumule les valeurs de production
 
                     if valeurProduction > meilleureValeurProduction: #comparaison avec la meilleure valeure actuelle
                         meilleureValeurProduction = valeurProduction
@@ -335,7 +311,11 @@ class JoueurAI(Joueur):
                             if t._valeur == 6 or t._valeur == 8: #si la meilleure actuelle a un 6 ou un 8 (a eviter pour eloigner le brigand)
                                 meilleureValeurProduction = valeurProduction
                                 meilleureIntersection = i
-                                              
+
+        for t in meilleureIntersection.obtenirTerritoiresVoisins(): #pour tous les territoires de l'intersection
+                        if t._valeur != 0:
+                            self.priorite[t.ressource()] -=1
+
         return meilleureIntersection
 
     def trouverMeilleureIntersectionRoute(self,intersection,mappe):
@@ -756,19 +736,27 @@ class JoueurAI(Joueur):
         futureVille = 0
 
         if colonies != False:
-            
+
+            futureVille = colonies[0]
+
             for i in colonies:
                 
                 valeurProduction = 0      #demarche pour trouver la meilleure valeur de production
 
                 for t in i.obtenirTerritoiresVoisins():
-                    valeurProduction += self.obtenirValeurProductionChiffre(t._valeur)
+                    if t._valeur !=0:
+                        valeurProduction += self.priorite[t.ressource()]*self.obtenirValeurProductionChiffre(t._valeur)
 
                 if valeurProduction > meilleureValeurProduction:
                     meilleureValeurProduction = valeurProduction
-                    futureVille = i._id
+                    futureVille = i
 
-            return futureVille
+            if futureVille !=0:
+                for t in futureVille.obtenirTerritoiresVoisins():
+                    if t._valeur !=0:
+                        self.priorite[t.ressource()] -=1
+
+            return futureVille._id
 
         return False
 
@@ -805,14 +793,19 @@ class JoueurAI(Joueur):
                 valeurProduction = 0
 
                 for t in i.obtenirTerritoiresVoisins():
-                    valeurProduction += self.obtenirValeurProductionChiffre(t._valeur)
+                    if t._valeur !=0:
+                        valeurProduction += self.priorite[t.ressource()]*self.obtenirValeurProductionChiffre(t._valeur)
 
                 if valeurProduction > meilleureValeurProduction:
                     meilleureValeurProduction = valeurProduction
-                    futureColonie = i._id
+                    futureColonie = i
 
             if futureColonie != 0:
-                return futureColonie
+                for t in futureColonie.obtenirTerritoiresVoisins():
+                    if t._valeur !=0:
+                        self.priorite[t.ressource()] -=1
+
+                return futureColonie._id
 
         return False
 
