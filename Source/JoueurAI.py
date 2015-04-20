@@ -128,7 +128,7 @@ class JoueurAI(Joueur):
                 actionsPossibles.append((Action.AJOUTER_ROUTE,[r[0],r[1]]))
 
         if self.peutJouerCarteChevalier():
-            actionsPossibles.append(Action.JOUER_CARTE_CHEVALIER)
+            actionsPossibles.append((Action.JOUER_CARTE_CHEVALIER, self.deciderJouerCarteChevalier(mappe,infoJoueurs)))
 
         if self.possibleAcheterCarte():
             actionsPossibles.append(Action.ACHETER_CARTE)
@@ -372,37 +372,29 @@ class JoueurAI(Joueur):
 
     def deciderJouerCarteChevalier(self,mappe,infoJoueurs):
 
-        voleurSurMaRegion = False
-        ennemiBonneZone = False
+        tableauJoueur = [];
 
-        for i in mappe.obtenirTerritoireContenantVoleurs().obtenirVoisins():
-            if i.obtenirOccupant() == self._id:
-                voleurSurMaRegion = True
-                break
 
-        joueurAVoler = False
-        territoireAVoler = False
+        for i in range(0, len(infoJoueurs), 1):
+            if i is not self._id:
+                tableauJoueur.append([i, infoJoueurs[i]])
 
-        for t in mappe.obtenirTousLesTerritoires():
-            
-            if t._valeur == 6 or t._valeur == 8:
-                
-                for i in t.obtenirVoisins():
-                    if i.obtenirOccupant() != self._id and i.obtenirOccupant() != None:
-                        ennemiBonneZone = True
-                        joueurAVoler = i.obtenirOccupant()
-                        territoireAVoler = t
+        tableauJoueur = sorted(tableauJoueur,key=lambda x:x[1][0], reverse = True)
 
-                    
+        for i in range(0, len(tableauJoueur)):
+            for t in mappe.obtenirTousLesTerritoires():
+                if t._valeur == 6 or t._valeur == 8:
+                    if t is not mappe.obtenirTerritoireContenantVoleurs():
+                        for j in t.obtenirVoisins():
+                            if j.obtenirOccupant() != self._id and j.obtenirOccupant() == tableauJoueur[i][0]:
+                                return[t._id, tableauJoueur[i][0]]
 
-            if joueurAVoler != False:
-                break;
 
-        if ennemiBonneZone and voleurSurMaRegion:
-               return [territoireAVoler._id, joueurAVoler]
+        # si on ne trouve pas de case approprié
+        territoire = mappe.obtenirNumerosIntersectionsJoueur(tableauJoueur[i][0])
+        return [territoire[0]._id, tableauJoueur[i][0]]
 
-        else:
-            return False
+
 
         
 
@@ -879,14 +871,6 @@ class JoueurAI(Joueur):
                             emplacementsPossibles.append([i._id,j._id])
 
         if emplacementsPossibles:
-
-            self.priorite[Ressource.ARGILE] = 10.0
-            self.priorite[Ressource.BLE] = 9.0
-            self.priorite[Ressource.BOIS] = 10.0
-            self.priorite[Ressource.MINERAL] = 7.0
-            self.priorite[Ressource.LAINE] = 8.0
-
-
             return emplacementsPossibles
             
         return False
