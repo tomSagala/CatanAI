@@ -246,19 +246,19 @@ class JoueurAI(Joueur):
 
         if len(self.actionsPrecedentes[1]) > 0:
             rewardDebut = -1.0
-            if self.actionsPrecedentes[1][0][2] >= 5:
+            if int(self.actionsPrecedentes[1][0][2]) >= 5:
                 rewardDebut = 1.0
 
             for i in range (0, len(self.actionsPrecedentes[0])):
-                self.dictCatan['debutPartie'][self.actionsPrecedentes[0][i][0]][str(self.actionsPrecedentes[0][i][2])] += rewardDebut + rewardPartie
+                self.dictCatan['debutPartie'][self.actionsPrecedentes[0][i][0]][str(self.actionsPrecedentes[0][i][2])] += rewardDebut
 
         if len(self.actionsPrecedentes[2]) > 0:
             rewardMid = -1.0
-            if self.actionsPrecedentes[2][0][2] >= 7:
+            if int(self.actionsPrecedentes[2][0][2]) >= 7:
                 rewardMid = 1.0
 
             for i in range (0, len(self.actionsPrecedentes[1])):
-                self.dictCatan['miPartie'][self.actionsPrecedentes[1][i][0]][str(self.actionsPrecedentes[1][i][2])] += rewardMid + rewardPartie
+                self.dictCatan['miPartie'][self.actionsPrecedentes[1][i][0]][str(self.actionsPrecedentes[1][i][2])] += rewardMid
 
         if len(self.actionsPrecedentes[2]) > 0:
             rewardEnd = -1.0
@@ -266,7 +266,7 @@ class JoueurAI(Joueur):
                 rewardEnd = 1.0
 
             for i in range (0, len(self.actionsPrecedentes[2])):
-                self.dictCatan['finPartie'][self.actionsPrecedentes[2][i][0]][str(self.actionsPrecedentes[2][i][2])] += rewardEnd + rewardPartie
+                self.dictCatan['finPartie'][self.actionsPrecedentes[2][i][0]][str(self.actionsPrecedentes[2][i][2])] += rewardEnd
 
     def mostCommunMove(self, list):
         compteurVille =0
