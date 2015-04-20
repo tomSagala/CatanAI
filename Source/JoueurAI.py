@@ -179,7 +179,10 @@ class JoueurAI(Joueur):
             elif favoriteAction is "actionEchanger":
                 action = self.actionEchangerRessources(actionsPossibles)
 
+
         if action is not None:
+
+
             self.actionsPrecedentes[self.gamePhase].append((favoriteAction, leaderPoints, str(min(self._pointsVictoire,10))))
             return action
 
@@ -965,7 +968,50 @@ class JoueurAI(Joueur):
 
         
         return False
-                                
+
+
+    # Retire un nombre de ressources égal à la quantité fournie en paramètre
+    def volerRessources(self,quantite):
+
+        if not self._ressources[Ressource.BLE] == 0:
+            importanceBle = self.priorite[Ressource.BLE] / self._ressources[Ressource.BLE]
+        else:
+            importanceBle = 0
+
+        if not self._ressources[Ressource.ARGILE] == 0:
+            importanceArgile = self.priorite[Ressource.ARGILE] / self._ressources[Ressource.ARGILE]
+        else:
+            importanceArgile = 0
+
+        if not self._ressources[Ressource.BOIS] == 0:
+            importanceBois = self.priorite[Ressource.BOIS] / self._ressources[Ressource.BOIS]
+        else:
+            importanceBois = 0
+
+        if not self._ressources[Ressource.MINERAL] == 0:
+            importanceMineral = self.priorite[Ressource.MINERAL] / self._ressources[Ressource.MINERAL]
+        else:
+            importanceMineral = 0
+
+        if not self._ressources[Ressource.LAINE] == 0:
+            importanceLaine =  self.priorite[Ressource.LAINE] / self._ressources[Ressource.LAINE]
+        else:
+            importanceLaine = 0
+
+        tableauImportance = [[Ressource.BLE, importanceBle], [Ressource.ARGILE, importanceArgile], [Ressource.BOIS, importanceBois], [Ressource.MINERAL, importanceMineral], [Ressource.LAINE, importanceLaine]]
+
+        for i in range(len(tableauImportance) - 1, 0, -1):
+            for j in range(i):
+                if tableauImportance[j][1] > tableauImportance[j + 1][1]:
+                    valTemporaire = tableauImportance[j]
+                    tableauImportance[j] = tableauImportance[j + 1]
+                    tableauImportance[j + 1] = valTemporaire
+
+        for k in range(0, len(tableauImportance) - 1, 1):
+             while quantite > 0 and self._ressources[tableauImportance[k][0]] > 0:
+                self._ressources[tableauImportance[k][0]] -= 1
+                quantite -= 1
+
 
 
                  
