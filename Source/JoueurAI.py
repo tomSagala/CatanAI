@@ -886,6 +886,14 @@ class JoueurAI(Joueur):
                             emplacementsPossibles.append([i._id,j._id])
 
         if emplacementsPossibles:
+
+            self.priorite[Ressource.ARGILE] = 10.0
+            self.priorite[Ressource.BLE] = 9.0
+            self.priorite[Ressource.BOIS] = 10.0
+            self.priorite[Ressource.MINERAL] = 7.0
+            self.priorite[Ressource.LAINE] = 8.0
+
+
             return emplacementsPossibles
             
         return False
@@ -1008,7 +1016,7 @@ class JoueurAI(Joueur):
                     tableauImportance[j + 1] = valTemporaire
 
         for k in range(0, len(tableauImportance) - 1, 1):
-             while quantite > 0 and self._ressources[tableauImportance[k][0]] > 0:
+             while quantite > 0 and self._ressources[tableauImportance[k][0]] > 1:
                 self._ressources[tableauImportance[k][0]] -= 1
                 quantite -= 1
 
