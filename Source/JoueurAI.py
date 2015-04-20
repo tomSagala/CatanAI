@@ -115,20 +115,18 @@ class JoueurAI(Joueur):
         
         if self.possibleAjouterVille(mappe):
             for v in self.possibleAjouterVille(mappe):
-                if v is int:
-                    actionsPossibles.append((Action.AJOUTER_VILLE,[v._id]))
+                actionsPossibles.append((Action.AJOUTER_VILLE,[v._id]))
 
         if self.possibleAjouterColonie(mappe):
             for c in self.possibleAjouterColonie(mappe):
-                if c is int:
-                    actionsPossibles.append((Action.AJOUTER_COLONIE,[c._id]))
+                actionsPossibles.append((Action.AJOUTER_COLONIE,[c._id]))
 
         if self.possibleAjouterRoute(mappe):
             for r in self.possibleAjouterRoute(mappe):
                 actionsPossibles.append((Action.AJOUTER_ROUTE,[r[0],r[1]]))
 
         if self.peutJouerCarteChevalier():
-            actionsPossibles.append(Action.JOUER_CARTE_CHEVALIER)
+            actionsPossibles.append(Action.JOUER_CARTE_CHEVALIER,)
 
         if self.possibleAcheterCarte():
             actionsPossibles.append(Action.ACHETER_CARTE)
