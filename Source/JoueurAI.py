@@ -28,6 +28,12 @@ class JoueurAI(Joueur):
         self.noRand = 0
         self.noDefiened = 0
 
+        self.priorite = {}
+        self.priorite[Ressource.ARGILE] = 10.0
+        self.priorite[Ressource.BLE] = 9.0
+        self.priorite[Ressource.BOIS] = 10.0
+        self.priorite[Ressource.MINERAL] = 7.0
+        self.priorite[Ressource.LAINE] = 8.0
         import json
         with open('catan.json', 'r') as fichierCatan:
             self.dictCatan = json.load(fichierCatan)
