@@ -324,10 +324,15 @@ class Controleur(object):
             d2 = int(math.ceil(random.random()*6))
             return d1+d2
 
+    def AIWin(self):
+        for j in range(self._nombreJoueurs):
+            if type(self._joueurs[j]) is JoueurAI and self._joueurs[j].nombrePointsVictoire() >= 10:
+                return True
+        return False
 
-for i in range(0,5000):
-    c = Controleur(['AI','Dumb','Dumb','Dumb'])
+for i in range(0,10000):
+    c = Controleur(['AI','Base','Base','Base'])
     c.jouer()
     print "partie "+str(i)
-
-
+    if c.AIWin():
+        print "AI Win"

@@ -15,7 +15,7 @@ import random
 
 from Joueur import *
 from JoueurAI import *
-from DumbAI import *
+from BaseAI import *
 
 
 class FabriqueJoueur:
@@ -25,7 +25,7 @@ class FabriqueJoueur:
     def creerJoueur(self,nomJoueur,id):
         if nomJoueur == 'AI':
             return JoueurAI(id)
-        elif nomJoueur == 'Dumb':
-            return  DumbAI(id)
+        elif nomJoueur == 'Base':
+            return  BaseAI(id)
         else:
             raise RuntimeError("Création de joueur: Numéro invalide")

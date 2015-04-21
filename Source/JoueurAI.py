@@ -16,6 +16,8 @@ class JoueurAI(Joueur):
     def __init__(self,id):
         super(JoueurAI,self).__init__(id)
 
+        self.learning = True;
+
         self.gamePhase = 0;
         self.premiereColonie = {}
         self.premiereIntersectionRoute = {}
@@ -35,8 +37,12 @@ class JoueurAI(Joueur):
         self.priorite[Ressource.MINERAL] = 5.0
         self.priorite[Ressource.LAINE] = 7.0
         import json
-        with open('catan.json', 'r') as fichierCatan:
-            self.dictCatan = json.load(fichierCatan)
+        if self.learning:
+            with open('catan.json', 'r') as fichierCatan:
+                self.dictCatan = json.load(fichierCatan)
+        else:
+            with open('catanFinal.json', 'r') as fichierCatan:
+                self.dictCatan = json.load(fichierCatan)
 
         debutValActionEchanger = self.dictCatan["debutPartie"]["actionEchanger"]
         debutValActionVille = self.dictCatan["debutPartie"]["actionVille"]
@@ -126,7 +132,7 @@ class JoueurAI(Joueur):
                 actionsPossibles.append((Action.AJOUTER_ROUTE,[r[0],r[1]]))
 
         if self.peutJouerCarteChevalier():
-            actionsPossibles.append(Action.JOUER_CARTE_CHEVALIER,)
+            actionsPossibles.append((Action.JOUER_CARTE_CHEVALIER, self.deciderJouerCarteChevalier(mappe,infoJoueurs)))
 
         if self.possibleAcheterCarte():
             actionsPossibles.append(Action.ACHETER_CARTE)
@@ -248,20 +254,11 @@ class JoueurAI(Joueur):
         with open('catan.json', 'w') as fichierCatan:
             json.dump(self.dictCatan, fichierCatan)
 
-        import csv
-        with open('catan.csv', 'ab') as f:
-            csvWriter = csv.writer(f, delimiter=' ', skipinitialspace=True)
-            if self._id == joueurID:
-                print "I Win"
-                csvWriter.writerow([1])
-            else:
-                csvWriter.writerow([0])
-
     def calculFinDePartie(self):
         #bonus pour le resultat final
-        rewardPartie=-1
+        rewardPartie=-1.0
         if self._pointsVictoire >= 10:
-            rewardPartie=1
+            rewardPartie=1.0
 
         if len(self.actionsPrecedentes[1]) > 0:
             rewardDebut = -1.0
@@ -269,7 +266,7 @@ class JoueurAI(Joueur):
                 rewardDebut = 1.0
 
             for i in range (0, len(self.actionsPrecedentes[0])):
-                self.dictCatan['debutPartie'][self.actionsPrecedentes[0][i][0]][str(self.actionsPrecedentes[0][i][2])] += rewardDebut
+                self.dictCatan['debutPartie'][self.actionsPrecedentes[0][i][0]][str(self.actionsPrecedentes[0][i][2])] += (rewardDebut + rewardPartie)/ len(self.actionsPrecedentes[0])
 
         if len(self.actionsPrecedentes[2]) > 0:
             rewardMid = -1.0
@@ -277,7 +274,7 @@ class JoueurAI(Joueur):
                 rewardMid = 1.0
 
             for i in range (0, len(self.actionsPrecedentes[1])):
-                self.dictCatan['miPartie'][self.actionsPrecedentes[1][i][0]][str(self.actionsPrecedentes[1][i][2])] += rewardMid
+                self.dictCatan['miPartie'][self.actionsPrecedentes[1][i][0]][str(self.actionsPrecedentes[1][i][2])] += (rewardMid + rewardPartie)/ len(self.actionsPrecedentes[1])
 
         if len(self.actionsPrecedentes[2]) > 0:
             rewardEnd = -1.0
@@ -285,7 +282,7 @@ class JoueurAI(Joueur):
                 rewardEnd = 1.0
 
             for i in range (0, len(self.actionsPrecedentes[2])):
-                self.dictCatan['finPartie'][self.actionsPrecedentes[2][i][0]][str(self.actionsPrecedentes[2][i][2])] += rewardEnd
+                self.dictCatan['finPartie'][self.actionsPrecedentes[2][i][0]][str(self.actionsPrecedentes[2][i][2])] += (rewardEnd + rewardPartie)/ len(self.actionsPrecedentes[2])
 
     def trouverMeilleureIntersectionColonie(self,mappe):
 
@@ -370,37 +367,27 @@ class JoueurAI(Joueur):
 
     def deciderJouerCarteChevalier(self,mappe,infoJoueurs):
 
-        voleurSurMaRegion = False
-        ennemiBonneZone = False
+        tableauJoueur = [];
 
-        for i in mappe.obtenirTerritoireContenantVoleurs().obtenirVoisins():
-            if i.obtenirOccupant() == self._id:
-                voleurSurMaRegion = True
-                break
 
-        joueurAVoler = False
-        territoireAVoler = False
+        for i in range(0, len(infoJoueurs), 1):
+            if i is not self._id:
+                tableauJoueur.append([i, infoJoueurs[i]])
 
-        for t in mappe.obtenirTousLesTerritoires():
-            
-            if t._valeur == 6 or t._valeur == 8:
-                
-                for i in t.obtenirVoisins():
-                    if i.obtenirOccupant() != self._id and i.obtenirOccupant() != None:
-                        ennemiBonneZone = True
-                        joueurAVoler = i.obtenirOccupant()
-                        territoireAVoler = t
+        tableauJoueur = sorted(tableauJoueur,key=lambda x:x[1][0], reverse = True)
 
-                    
+        for i in range(0, len(tableauJoueur)):
+            for t in mappe.obtenirTousLesTerritoires():
+                if t._valeur == 6 or t._valeur == 8:
+                    if t is not mappe.obtenirTerritoireContenantVoleurs():
+                        for j in t.obtenirVoisins():
+                            if j.obtenirOccupant() != self._id and j.obtenirOccupant() == tableauJoueur[i][0]:
+                                return[t._id, tableauJoueur[i][0]]
 
-            if joueurAVoler != False:
-                break;
 
-        if ennemiBonneZone and voleurSurMaRegion:
-               return [territoireAVoler._id, joueurAVoler]
-
-        else:
-            return False
+        # si on ne trouve pas de case approprié
+        territoire = mappe.obtenirNumerosIntersectionsJoueur(tableauJoueur[i][0])
+        return [territoire[0]._id, tableauJoueur[i][0]]
 
         
 

@@ -7,11 +7,11 @@ from Mappe import *
 
 
 ################## Joueur Intelligent
-class DumbAI(Joueur):
+class BaseAI(Joueur):
 
     
     def __init__(self,id):
-        super(DumbAI,self).__init__(id)
+        super(BaseAI,self).__init__(id)
 
         self.premiereColonie = {}
         self.premiereIntersectionRoute = {}
