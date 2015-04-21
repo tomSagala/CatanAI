@@ -173,7 +173,7 @@ class Controleur(object):
     def _joueurGagnant(self):
         for j in range(self._nombreJoueurs):
             if self._joueurs[j].nombrePointsVictoire() >= 10:
-                print self._joueurs[j].nom(),"a gagné la partie"
+                #print self._joueurs[j].nom(),"a gagné la partie"
                 for k in range(self._nombreJoueurs):
                     self._joueurs[k].finDePartie(self._mappe,self._joueurs[j].id())
                 return True
@@ -315,7 +315,7 @@ class Controleur(object):
             sequence = [6,10,9,2,6,5,9,7,2,4,4,11,12,6,12,6,9,8,8,8,10,2,4,8,9,9,11,2,2,2,8,9,8,9,4,6,2,2,3,4,5,6,8,9,10,11,10,10,10,4,8,2,4,2,2,2,2,2,2,2,4,4,4,4,4,11,2,4,2,4,2,3,11,3,11]
             v = sequence[self._numeroSequenceDes]
             self._numeroSequenceDes += 1
-			# On reprend la sequence des Des depuis le debut 
+            # On reprend la sequence des Des depuis le debut 
             if (self._numeroSequenceDes ==  len(sequence)):
                 self._numeroSequenceDes = 0				
             return v
@@ -330,9 +330,18 @@ class Controleur(object):
                 return True
         return False
 
+winCounter = 0.0
 for i in range(0,10000):
     c = Controleur(['AI','Base','Base','Base'])
     c.jouer()
     print "partie "+str(i)
     if c.AIWin():
+        winCounter +=1.0
         print "AI Win"
+    if i%100 == 0 and i!=0:
+        import csv 
+        with open('catan.csv', 'ab') as f: 
+            csvWriter = csv.writer(f, delimiter=' ', skipinitialspace=True) 
+            csvWriter.writerow([winCounter/100.0]) 
+        print winCounter/100.0
+        winCounter = 0
